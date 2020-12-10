@@ -46,8 +46,8 @@ public class TankMovement : MonoBehaviour
     // Awake()와 마찬가지로 최초로 활성화될 때 한번만 불리는 함수(Awake보다 늦게 호출됨)
     private void Start()
     {
-        m_MovementAxisName = "Vertical" + m_PlayerNumber;
-        m_TurnAxisName = "Horizontal" + m_PlayerNumber;
+        m_MovementAxisName = "VerticalKey";
+        m_TurnAxisName = "HorizontalKey";
 
         m_OriginalPitch = m_MovementAudio.pitch;
     }

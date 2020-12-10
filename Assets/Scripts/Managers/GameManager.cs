@@ -2,8 +2,9 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Photon.Pun;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourPunCallbacks
 {
     public int m_NumRoundsToWin = 5;        
     public float m_StartDelay = 3f;         
@@ -13,26 +14,44 @@ public class GameManager : MonoBehaviour
     public GameObject m_TankPrefab;         
     public TankManager[] m_Tanks;           
 
-
     private int m_RoundNumber;              
     private WaitForSeconds m_StartWait;     
     private WaitForSeconds m_EndWait;       
     private TankManager m_RoundWinner;
-    private TankManager m_GameWinner;       
+    private TankManager m_GameWinner;
 
+
+    // Photon Variable
+    //public TankManager m_Tank;
 
     private void Start()
     {
         m_StartWait = new WaitForSeconds(m_StartDelay);
         m_EndWait = new WaitForSeconds(m_EndDelay);
 
-        SpawnAllTanks();
+        //SpawnAllTanks();
+        
+        
         SetCameraTargets();
 
-        StartCoroutine(GameLoop());
+         
+        //StartCoroutine(GameLoop());
     }
 
+    #region Photon Callbacks
+    public override void OnJoinedRoom()
+    {
+        int i = PhotonNetwork.CountOfPlayersInRooms;
+        PhotonNetwork.Instantiate("NetworkTank", m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
+    }
 
+    #endregion
+
+    #region TANKS method
+    private void SpawnTank()
+    {
+    }
+    
     private void SpawnAllTanks()
     {
         for (int i = 0; i < m_Tanks.Length; i++)
@@ -60,6 +79,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator GameLoop()
     {
+
         yield return StartCoroutine(RoundStarting());
         yield return StartCoroutine(RoundPlaying());
         yield return StartCoroutine(RoundEnding());
@@ -206,4 +226,5 @@ public class GameManager : MonoBehaviour
             m_Tanks[i].DisableControl();
         }
     }
+    #endregion
 }
