@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class TankShooting : MonoBehaviour
 {
@@ -18,8 +19,9 @@ public class TankShooting : MonoBehaviour
     private string m_FireButton;         
     private float m_CurrentLaunchForce;  
     private float m_ChargeSpeed;         
-    private bool m_Fired;                
+    private bool m_Fired;
 
+    private PhotonView pv;
 
     private void OnEnable()
     {
@@ -30,8 +32,7 @@ public class TankShooting : MonoBehaviour
 
     private void Start()
     {
-        m_FireButton = "Fire" + m_PlayerNumber;
-
+        pv = GetComponent<PhotonView>();
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
     }
     
@@ -39,15 +40,17 @@ public class TankShooting : MonoBehaviour
     private void Update()
     {
         // Track the current state of the fire button and make decisions based on the current launch force.
+        if (!pv.IsMine) return;
+
         m_AimSlider.value = m_MinLaunchForce;
 
-        if(m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired)
+        if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired)
         {
             // at max charge, not yet fired
             m_CurrentLaunchForce = m_MaxLaunchForce;
             Fire();
         }
-        else if (Input.GetButtonDown(m_FireButton))
+        else if (Input.GetMouseButtonDown(0))
         {
             // have we pressed fire for the first time?
             m_Fired = false;
@@ -56,14 +59,14 @@ public class TankShooting : MonoBehaviour
             m_ShootingAudio.clip = m_ChargingClip;
             m_ShootingAudio.Play();
         }
-        else if(Input.GetButton(m_FireButton) && !m_Fired)
+        else if (Input.GetMouseButtonDown(0) && !m_Fired)
         {
             // Holding the fire button, not yet fired
             m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
 
             m_AimSlider.value = m_CurrentLaunchForce;
         }
-        else if(Input.GetButtonUp(m_FireButton) && !m_Fired)
+        else if (Input.GetMouseButtonDown(0) && !m_Fired)
         {
             // we released the button, having not fired yet
             Fire();

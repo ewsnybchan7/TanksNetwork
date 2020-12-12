@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Photon.Pun;
 
-public class TankMovement : MonoBehaviour
+public class TankMovement : MonoBehaviour, IPunObservable
 {
     public int m_PlayerNumber = 1;         
     public float m_Speed = 12f;            
@@ -13,20 +13,29 @@ public class TankMovement : MonoBehaviour
 
     
     private string m_MovementAxisName;     
-    private string m_TurnAxisName;         
-    private Rigidbody m_Rigidbody;         
+    private string m_TurnAxisName;
+    private Rigidbody m_Rigidbody;
+    private Transform m_Transform;
     private float m_MovementInputValue;    
     private float m_TurnInputValue;        
     private float m_OriginalPitch;
 
     private PhotonView pv;
 
+    // Smooth moving variable
+    private Vector3 curPos = Vector3.zero;
+    private Quaternion curRot = Quaternion.identity;
+
     // Awake
     // 해당 스크립트가 등록된 오브젝트(스크립트)가 최초로 활성화될 때 불리는 함수(한번만)
     private void Awake()
     {
+        m_Transform = GetComponent<Transform>();
         m_Rigidbody = GetComponent<Rigidbody>();
         pv = GetComponent<PhotonView>();
+
+        curPos = m_Transform.position;
+        curRot = m_Transform.rotation;
     }
 
     // OnEable
@@ -55,7 +64,7 @@ public class TankMovement : MonoBehaviour
 
         m_OriginalPitch = m_MovementAudio.pitch;
     }
-    
+
     // Update
     // 활성화 상태일 때 한 프레임에 한번씩 호출되는 함수
     private void Update()
@@ -63,6 +72,13 @@ public class TankMovement : MonoBehaviour
         // Store the player's input and make sure the audio for the engine is playing.
         m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
         m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
+
+        if(!pv.IsMine)
+        {
+            transform.position = Vector3.Lerp(m_Transform.position, curPos, Time.deltaTime * 3.0f);
+            transform.rotation = Quaternion.Slerp(m_Transform.rotation, curRot, Time.deltaTime * 3.0f);
+        }
+
 
         EngineAudio();
     }
@@ -122,5 +138,19 @@ public class TankMovement : MonoBehaviour
         Quaternion turnRotation = Quaternion.Euler(0f, turn, 0f);
 
         m_Rigidbody.MoveRotation(m_Rigidbody.rotation * turnRotation);
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(m_Transform.position);
+            stream.SendNext(m_Transform.rotation);
+        }
+        else
+        {
+            curPos = (Vector3)stream.ReceiveNext();
+            curRot = (Quaternion)stream.ReceiveNext();
+        }
     }
 }
