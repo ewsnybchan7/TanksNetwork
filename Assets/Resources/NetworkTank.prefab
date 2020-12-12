@@ -298,6 +298,7 @@ GameObject:
   - component: {fileID: 1823010725}
   - component: {fileID: 1823010724}
   - component: {fileID: 1823010723}
+  - component: {fileID: 2063474024197300594}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -386,6 +387,21 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &2063474024197300594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823010721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
 --- !u!1 &461742453183561136
 GameObject:
   m_ObjectHideFlags: 0
@@ -645,7 +661,7 @@ GameObject:
   - component: {fileID: 4201808525596764754}
   - component: {fileID: 6108783572495035841}
   - component: {fileID: 8948025301690187728}
-  - component: {fileID: 2225141849771643223}
+  - component: {fileID: 4241816478789049924}
   m_Layer: 9
   m_Name: NetworkTank
   m_TagString: Untagged
@@ -972,7 +988,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 2225141849771643223}
+  - {fileID: 989825983}
+  - {fileID: 4241816478789049924}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -993,7 +1010,7 @@ MonoBehaviour:
   m_PlayerNumber: 0
   m_ColoredPlayerText: 
   m_Instance: {fileID: 0}
---- !u!114 &2225141849771643223
+--- !u!114 &4241816478789049924
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1002,13 +1019,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 461742453183561142}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
-  m_TeleportIfDistanceGreaterThan: 3
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
 --- !u!1 &461742453183561146
 GameObject:
   m_ObjectHideFlags: 0
@@ -1055,6 +1071,8 @@ GameObject:
   - component: {fileID: 461742453180522500}
   - component: {fileID: 461742453181620932}
   - component: {fileID: 5587002622215994696}
+  - component: {fileID: 8830469212444169677}
+  - component: {fileID: 6395630910494812764}
   m_Layer: 0
   m_Name: TankTurret
   m_TagString: Untagged
@@ -1140,6 +1158,46 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 1992557925584083836}
   canvas: {fileID: 1823010722}
+  m_Transform: {fileID: 0}
+--- !u!114 &8830469212444169677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 461742453183561150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  observableSearch: 2
+  Synchronization: 2
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 5587002622215994696}
+  - {fileID: 6395630910494812764}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &6395630910494812764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 461742453183561150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
 --- !u!1 &2912200437462483361
 GameObject:
   m_ObjectHideFlags: 0
@@ -1403,6 +1461,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7293039153850277759}
+  - component: {fileID: 14459467498757836}
   m_Layer: 0
   m_Name: FireTransform
   m_TagString: Untagged
@@ -1424,6 +1483,21 @@ Transform:
   m_Father: {fileID: 461742453183914078}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 350, y: 0, z: 0}
+--- !u!114 &14459467498757836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6381715615486665724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
 --- !u!1 &7588514546315066711
 GameObject:
   m_ObjectHideFlags: 0

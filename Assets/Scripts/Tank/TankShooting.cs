@@ -41,7 +41,7 @@ public class TankShooting : MonoBehaviour
     {
         // Track the current state of the fire button and make decisions based on the current launch force.
         if (!pv.IsMine) return;
-
+         
         m_AimSlider.value = m_MinLaunchForce;
 
         if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired)
@@ -59,14 +59,14 @@ public class TankShooting : MonoBehaviour
             m_ShootingAudio.clip = m_ChargingClip;
             m_ShootingAudio.Play();
         }
-        else if (Input.GetMouseButtonDown(0) && !m_Fired)
+        else if (Input.GetMouseButton(0) && !m_Fired)
         {
             // Holding the fire button, not yet fired
             m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
 
             m_AimSlider.value = m_CurrentLaunchForce;
         }
-        else if (Input.GetMouseButtonDown(0) && !m_Fired)
+        else if (Input.GetMouseButtonUp(0) && !m_Fired)
         {
             // we released the button, having not fired yet
             Fire();
