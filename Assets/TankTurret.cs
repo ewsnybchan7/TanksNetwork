@@ -1,20 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class TankTurret : MonoBehaviour
 {
     public Camera mainCamera;
     public Transform canvas;
 
+    private PhotonView pv;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        pv = GetComponentInParent<PhotonView>();
     }
 
     // Update is called once per frame
     void Update()
+    {
+        if(pv.IsMine)
+            rotateTowardMouse();
+    }
+
+    private void rotateTowardMouse()
     {
         Ray cameraRay = mainCamera.ScreenPointToRay(Input.mousePosition);
 

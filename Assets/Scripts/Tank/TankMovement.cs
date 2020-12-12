@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Photon.Pun;
 
 public class TankMovement : MonoBehaviour
 {
@@ -16,13 +17,16 @@ public class TankMovement : MonoBehaviour
     private Rigidbody m_Rigidbody;         
     private float m_MovementInputValue;    
     private float m_TurnInputValue;        
-    private float m_OriginalPitch;         
+    private float m_OriginalPitch;
+
+    private PhotonView pv;
 
     // Awake
     // 해당 스크립트가 등록된 오브젝트(스크립트)가 최초로 활성화될 때 불리는 함수(한번만)
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
+        pv = GetComponent<PhotonView>();
     }
 
     // OnEable
@@ -93,8 +97,11 @@ public class TankMovement : MonoBehaviour
     private void FixedUpdate()
     {
         // Move and turn the tank.
-        Move();
-        Turn();
+        if (pv.IsMine)
+        {
+            Move();
+            Turn();
+        }
     }
 
 
