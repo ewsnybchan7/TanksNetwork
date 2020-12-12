@@ -30,7 +30,6 @@ public class NetworkSample : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 4 }, null);
-        Debug.Log("hi");
     }
 
     public override void OnJoinedRoom()

@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         //SpawnAllTanks();
         
         
-        SetCameraTargets();
+        //SetCameraTargets();
 
          
         //StartCoroutine(GameLoop());
@@ -42,15 +42,13 @@ public class GameManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         int i = PhotonNetwork.CountOfPlayersInRooms;
-        PhotonNetwork.Instantiate("NetworkTank", m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
+        m_Tanks[i].m_Instance =
+            PhotonNetwork.Instantiate("NetworkTank", m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
     }
 
     #endregion
 
     #region TANKS method
-    private void SpawnTank()
-    {
-    }
     
     private void SpawnAllTanks()
     {

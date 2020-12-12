@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class TankTurret : MonoBehaviour
 {
+    public Camera mainCamera;
+    public Transform canvas;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -13,14 +16,17 @@ public class TankTurret : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z = Camera.main.nearClipPlane;
-        Vector3 worldMousePos = Camera.main.ScreenToWorldPoint(mousePos);
-        //Vector3 screenTurretPos = Camera.main.
-        float theta = Vector2.Dot(Vector3.forward, (worldMousePos - this.transform.position).normalized);
-        this.transform.rotation = new Quaternion(0, Mathf.Acos(theta), 0, 0);
-        //Debug.Log(mousePos);
-        Debug.Log(worldMousePos);
-        Debug.Log(Mathf.Acos(theta));
+        Ray cameraRay = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        Plane GroupPlane = new Plane(Vector3.up, Vector3.zero);
+
+        float rayLength;
+
+        if (GroupPlane.Raycast(cameraRay, out rayLength))
+        {
+            Vector3 pointTolook = cameraRay.GetPoint(rayLength);
+            Vector3 lookPoint = new Vector3(pointTolook.x, transform.position.y, pointTolook.z);
+            transform.LookAt(lookPoint);
+        }
     }
 }

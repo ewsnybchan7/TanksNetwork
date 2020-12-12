@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Photon.Pun;
 
 public class CameraControl : MonoBehaviour
 {
@@ -7,25 +8,33 @@ public class CameraControl : MonoBehaviour
     public float m_MinSize = 6.5f;                  
     [HideInInspector] public Transform[] m_Targets;         // tank target
 
-
     private Camera m_Camera;                        
     private float m_ZoomSpeed;                      
     private Vector3 m_MoveVelocity;                 
-    private Vector3 m_DesiredPosition;              
+    private Vector3 m_DesiredPosition;
 
+    private PhotonView playerPV;
+
+    private Vector3 worldRotataion = new Vector3(40, 60, 0);
 
     private void Awake()
     {
         m_Camera = GetComponentInChildren<Camera>();
+        playerPV = GetComponentInParent<PhotonView>();
+        if (!playerPV.IsMine) gameObject.SetActive(false);
     }
-
 
     private void FixedUpdate()
     {
-        Move();
-        Zoom();
+        //Move();
+        //Zoom();
+
     }
 
+    private void LateUpdate()
+    {
+        transform.rotation = Quaternion.Euler(worldRotataion);
+    }
 
     private void Move()
     {
