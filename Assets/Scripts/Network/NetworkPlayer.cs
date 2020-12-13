@@ -15,6 +15,8 @@ public class NetworkPlayer : MonoBehaviourPunCallbacks
     private TankMovement m_Movement;
     private TankShooting m_Shooting;
     private GameObject m_CanvasGameObject;
+   
+    private PhotonView pv;
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +36,8 @@ public class NetworkPlayer : MonoBehaviourPunCallbacks
         {
             renderers[i].material.color = m_PlayerColor;
         }
+
+        pv = GetComponent<PhotonView>();
     }
 
     // Update is called once per frame

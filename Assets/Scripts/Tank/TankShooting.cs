@@ -42,8 +42,7 @@ public class TankShooting : MonoBehaviour
         // Track the current state of the fire button and make decisions based on the current launch force.
         if (!pv.IsMine) return;
 
-        //m_AimSlider.value = m_MinLaunchForce; // local
-        pv.RPC("aimSliderValueChanged", RpcTarget.All, null);
+        m_AimSlider.value = m_MinLaunchForce; // local
 
         if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired)
         {
@@ -77,9 +76,6 @@ public class TankShooting : MonoBehaviour
             pv.RPC("mouseButtonUpFire", RpcTarget.All);
         }
     }
-
-    [PunRPC]
-    void aimSliderValueChanged() => m_AimSlider.value = m_MinLaunchForce;
 
     [PunRPC]
     void maxTimeFire()
