@@ -34,6 +34,11 @@ public class TankShooting : MonoBehaviour
     {
         pv = GetComponent<PhotonView>();
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
+
+        if(!pv.IsMine)
+        {
+            m_AimSlider.gameObject.SetActive(false);
+        }
     }
 
 
