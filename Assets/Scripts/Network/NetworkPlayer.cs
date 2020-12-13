@@ -32,8 +32,8 @@ public class NetworkPlayer : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        m_PlayerColor = (Color)photonView.Owner.CustomProperties["Color"];
-        m_PlayerNumber = (int)photonView.Owner.CustomProperties["Number"];
+        //m_PlayerColor = (Color)photonView.Owner.CustomProperties["Color"];
+        //m_PlayerNumber = (int)photonView.Owner.CustomProperties["Number"];
 
         m_Movement.m_PlayerNumber = m_PlayerNumber;
         m_Shooting.m_PlayerNumber = m_PlayerNumber;

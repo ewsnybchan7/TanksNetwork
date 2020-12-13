@@ -57,37 +57,37 @@ public class TankShooting : MonoBehaviour
         if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired)
         {
             // ... use the max force and launch the shell.
-            //m_CurrentLaunchForce = m_MaxLaunchForce;
-            //Fire();
-            pv.RPC("maxTimeFire", RpcTarget.AllViaServer);
+            m_CurrentLaunchForce = m_MaxLaunchForce;
+            Fire();
+            pv.RPC("maxTimeFire", RpcTarget.Others);
         }
         // Otherwise, fire 버튼 눌렸을때(눌린상태)(처음누른상태 진입 체크)
         else if (Input.GetMouseButtonDown(0))
         {
             // ... reset the fired flag and reset the launch force.
-            //m_Fired = false;
-            //m_CurrentLaunchForce = m_MinLaunchForce;
+            m_Fired = false;
+            m_CurrentLaunchForce = m_MinLaunchForce;
 
-            //// Change the clip to the charging clip and start it playing.
-            //m_ShootingAudio.clip = m_ChargingClip; //차징 클립 재생
-            //m_ShootingAudio.Play();
-            pv.RPC("mouseButtonDownFire", RpcTarget.AllViaServer);
+            // Change the clip to the charging clip and start it playing.
+            m_ShootingAudio.clip = m_ChargingClip; //차징 클립 재생
+            m_ShootingAudio.Play();
+            pv.RPC("mouseButtonDownFire", RpcTarget.Others);
         }
         // Otherwise, 버튼 눌린(홀드) 상태에서 발사 안됬을 경우
         else if (Input.GetMouseButton(0) && !m_Fired)
         {
-            // Increment the launch force and update the slider.
-            //m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
+            //Increment the launch force and update the slider.
+            m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
 
-            //m_AimSlider.value = m_CurrentLaunchForce;
-            pv.RPC("mouseButtonFire", RpcTarget.All);
+            m_AimSlider.value = m_CurrentLaunchForce;
+            pv.RPC("mouseButtonFire", RpcTarget.Others);
         }
         // Otherwise, 버튼 릴리스 상태에서 발사 안됬을 경우
         else if (Input.GetMouseButtonUp(0) && !m_Fired)
         {
             // ... launch the shell.
-            //Fire();
-            pv.RPC("mouseButtonUpFire", RpcTarget.AllViaServer);
+            Fire();
+            pv.RPC("mouseButtonUpFire", RpcTarget.Others);
         }
     }
 
@@ -147,7 +147,7 @@ public class TankShooting : MonoBehaviour
         }
 
         // Set the shell's velocity to the launch force in the fire position's forward direction.
-        shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward; ;
+        shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
 
         // Change the clip to the firing clip and play it.
         m_ShootingAudio.clip = m_FireClip;

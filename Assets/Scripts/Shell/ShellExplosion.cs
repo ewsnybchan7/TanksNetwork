@@ -23,13 +23,20 @@ public class ShellExplosion : MonoBehaviour
         // Collect all the colliders in a sphere from the shell's current position to a radius of the explosion radius.
         if (ownerIsPlayer)
         {
-            if (other.GetComponent<NetworkPlayer>()) return;
+            if (other.GetComponent<NetworkPlayer>())
+            {
+                return;
+            }
 
             m_TankMask = LayerMask.GetMask("AI");
         }
+        else
+        {
+            m_TankMask = LayerMask.GetMask("Players");
+        }
 
         Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius, m_TankMask); //폭발 반경내에 있는 tankmask있는 colㅣider 를 구형범위로 수집
-        
+
         // Go through all the colliders...
         for (int i = 0; i < colliders.Length; i++)
         {
