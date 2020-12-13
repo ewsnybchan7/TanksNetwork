@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using Photon.Pun.UtilityScripts;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class PlayerListEntry : MonoBehaviour
 {
@@ -78,6 +78,17 @@ public class PlayerListEntry : MonoBehaviour
             if(p.ActorNumber == ownerID)
             {
                 playerColorImage.color = TANKSGame.GetColor(p.GetPlayerNumber());
+                Hashtable playerProperty = p.CustomProperties;
+
+                if (playerProperty["Color"] == null)
+                    playerProperty.Add("Color", playerColorImage.color);
+                else
+                    playerProperty["Color"] = playerColorImage.color;
+
+                if (playerProperty["Number"] == null)
+                    playerProperty.Add("Number", p.GetPlayerNumber());
+                else
+                    playerProperty["Number"] = p.GetPlayerNumber();
             }
         }
     }

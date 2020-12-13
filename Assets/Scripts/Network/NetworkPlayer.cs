@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using Photon.Pun.UtilityScripts;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class NetworkPlayer : MonoBehaviourPunCallbacks
 {
@@ -18,12 +20,20 @@ public class NetworkPlayer : MonoBehaviourPunCallbacks
 
     private PhotonView pv;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         m_Movement = GetComponent<TankMovement>();
         m_Shooting = GetComponent<TankShooting>();
         m_CanvasGameObject = GetComponentInChildren<Canvas>().gameObject;
+
+        pv = GetComponent<PhotonView>();
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        m_PlayerColor = (Color)photonView.Owner.CustomProperties["Color"];
+        m_PlayerNumber = (int)photonView.Owner.CustomProperties["Number"];
 
         m_Movement.m_PlayerNumber = m_PlayerNumber;
         m_Shooting.m_PlayerNumber = m_PlayerNumber;
@@ -36,8 +46,6 @@ public class NetworkPlayer : MonoBehaviourPunCallbacks
         {
             renderers[i].material.color = m_PlayerColor;
         }
-
-        pv = GetComponent<PhotonView>();
     }
 
     // Update is called once per frame
@@ -45,6 +53,7 @@ public class NetworkPlayer : MonoBehaviourPunCallbacks
     {
 
     }
+
 
     [PunRPC]
     public void DisableControl()

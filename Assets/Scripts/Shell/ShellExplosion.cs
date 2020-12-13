@@ -2,7 +2,7 @@
 
 public class ShellExplosion : MonoBehaviour
 {
-    public LayerMask m_TankMask; //탱크가 존재하는 레이어를 마스킹
+    private LayerMask m_TankMask; //탱크가 존재하는 레이어를 마스킹
     public ParticleSystem m_ExplosionParticles;       
     public AudioSource m_ExplosionAudio;              
     public float m_MaxDamage = 100f;          //최대 데미지        
@@ -10,19 +10,26 @@ public class ShellExplosion : MonoBehaviour
     public float m_MaxLifeTime = 2f;         //포탄 유지 시간         
     public float m_ExplosionRadius = 5f;    //포탄 폭발 반경          
 
+    public bool ownerIsPlayer;
 
     private void Start()
     {
         Destroy(gameObject, m_MaxLifeTime); //유지 시간 이휴에 object를 destroy
     }
 
-
     private void OnTriggerEnter(Collider other)
     {
         // Find all the tanks in an area around the shell and damage them.
         // Collect all the colliders in a sphere from the shell's current position to a radius of the explosion radius.
-        Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius, m_TankMask); //폭발 반경내에 있는 tankmask있는 colㅣider 를 구형범위로 수집
+        if (ownerIsPlayer)
+        {
+            if (other.GetComponent<NetworkPlayer>()) return;
 
+            m_TankMask = LayerMask.GetMask("AI");
+        }
+
+        Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius, m_TankMask); //폭발 반경내에 있는 tankmask있는 colㅣider 를 구형범위로 수집
+        
         // Go through all the colliders...
         for (int i = 0; i < colliders.Length; i++)
         {

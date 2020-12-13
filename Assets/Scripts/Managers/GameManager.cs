@@ -41,9 +41,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     #region Photon Callbacks
     public override void OnJoinedRoom()
     {
-        int i = PhotonNetwork.CountOfPlayersInRooms;
-        m_Tanks[i].m_Instance =
-            PhotonNetwork.Instantiate("NetworkTank", m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
+        //int i = PhotonNetwork.CountOfPlayersInRooms;
+        //m_Tanks[i].m_Instance =
+        //    PhotonNetwork.Instantiate("NetworkTank", m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
     }
 
     #endregion
