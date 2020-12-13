@@ -6,17 +6,17 @@ using Photon.Pun;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
-    public int m_NumRoundsToWin = 5;        
-    public float m_StartDelay = 3f;         
-    public float m_EndDelay = 3f;           
-    public CameraControl m_CameraControl;   
-    public Text m_MessageText;              
-    public GameObject m_TankPrefab;         
-    public TankManager[] m_Tanks;           
+    public int m_NumRoundsToWin = 5;
+    public float m_StartDelay = 3f;
+    public float m_EndDelay = 3f;
+    public CameraControl m_CameraControl;
+    public Text m_MessageText;
+    public GameObject m_TankPrefab;
+    public TankManager[] m_Tanks;
 
-    private int m_RoundNumber;              
-    private WaitForSeconds m_StartWait;     
-    private WaitForSeconds m_EndWait;       
+    private int m_RoundNumber;
+    private WaitForSeconds m_StartWait;
+    private WaitForSeconds m_EndWait;
     private TankManager m_RoundWinner;
     private TankManager m_GameWinner;
 
@@ -30,11 +30,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         m_EndWait = new WaitForSeconds(m_EndDelay);
 
         //SpawnAllTanks();
-        
-        
-        SetCameraTargets();
 
-         
+
+        //SetCameraTargets();
+
+
         //StartCoroutine(GameLoop());
     }
 
@@ -42,16 +42,14 @@ public class GameManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         int i = PhotonNetwork.CountOfPlayersInRooms;
-        PhotonNetwork.Instantiate("NetworkTank", m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
+        m_Tanks[i].m_Instance =
+            PhotonNetwork.Instantiate("NetworkTank", m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
     }
 
     #endregion
 
     #region TANKS method
-    private void SpawnTank()
-    {
-    }
-    
+
     private void SpawnAllTanks()
     {
         for (int i = 0; i < m_Tanks.Length; i++)
@@ -115,7 +113,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         m_MessageText.text = string.Empty;
 
-        while(!OneTankLeft())
+        while (!OneTankLeft())
         {
             yield return null;
         }

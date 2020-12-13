@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class TankShooting : MonoBehaviour
 {
@@ -19,8 +20,9 @@ public class TankShooting : MonoBehaviour
     private string m_FireButton;         
     private float m_CurrentLaunchForce;  
     private float m_ChargeSpeed;         
-    private bool m_Fired;                
+    private bool m_Fired;
 
+    private PhotonView pv;
 
     private void OnEnable()
     {
@@ -28,12 +30,13 @@ public class TankShooting : MonoBehaviour
         m_AimSlider.value = m_MinLaunchForce;
     }
 
-
     private void Start()
     {
-        m_FireButton = "Fire" + m_PlayerNumber; //몇번째 플레이어 의 fire 버튼인지 받음
+        pv = GetComponent<PhotonView>();
 
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime; //차징 속도 계산
+
+        m_AimSlider.gameObject.SetActive(pv.IsMine);
     }
     
 
@@ -43,6 +46,9 @@ public class TankShooting : MonoBehaviour
         {
             return;
         }
+
+        if (!pv.IsMine) return;
+
         // Track the current state of the fire button and make decisions based on the current launch force.
         // 에임 슬라이더 디폴트 값으로 설정
         m_AimSlider.value = m_MinLaunchForce;
@@ -51,36 +57,73 @@ public class TankShooting : MonoBehaviour
         if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired)
         {
             // ... use the max force and launch the shell.
-            m_CurrentLaunchForce = m_MaxLaunchForce;
-            Fire();
+            //m_CurrentLaunchForce = m_MaxLaunchForce;
+            //Fire();
+            pv.RPC("maxTimeFire", RpcTarget.All);
         }
         // Otherwise, fire 버튼 눌렸을때(눌린상태)(처음누른상태 진입 체크)
-        else if (Input.GetButtonDown(m_FireButton))
+        else if (Input.GetMouseButtonDown(0))
         {
             // ... reset the fired flag and reset the launch force.
-            m_Fired = false;
-            m_CurrentLaunchForce = m_MinLaunchForce;
+            //m_Fired = false;
+            //m_CurrentLaunchForce = m_MinLaunchForce;
 
-            // Change the clip to the charging clip and start it playing.
-            m_ShootingAudio.clip = m_ChargingClip; //차징 클립 재생
-            m_ShootingAudio.Play();
+            //// Change the clip to the charging clip and start it playing.
+            //m_ShootingAudio.clip = m_ChargingClip; //차징 클립 재생
+            //m_ShootingAudio.Play();
+            pv.RPC("mouseButtonDownFire", RpcTarget.All);
         }
         // Otherwise, 버튼 눌린(홀드) 상태에서 발사 안됬을 경우
-        else if (Input.GetButton(m_FireButton) && !m_Fired)
+        else if (Input.GetMouseButton(0) && !m_Fired)
         {
             // Increment the launch force and update the slider.
-            m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
+            //m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
 
-            m_AimSlider.value = m_CurrentLaunchForce;
+            //m_AimSlider.value = m_CurrentLaunchForce;
+            pv.RPC("mouseButtonFire", RpcTarget.All);
         }
         // Otherwise, 버튼 릴리스 상태에서 발사 안됬을 경우
-        else if (Input.GetButtonUp(m_FireButton) && !m_Fired)
+        else if (Input.GetMouseButtonUp(0) && !m_Fired)
         {
             // ... launch the shell.
-            Fire();
+            //Fire();
+            pv.RPC("mouseButtonUpFire", RpcTarget.All);
         }
     }
 
+    [PunRPC]
+    void maxTimeFire()
+    {
+        // at max charge, not yet fired
+        m_CurrentLaunchForce = m_MaxLaunchForce;
+        Fire();
+    }
+
+    [PunRPC]
+    void mouseButtonDownFire()
+    {
+        // have we pressed fire for the first time?
+        m_Fired = false;
+        m_CurrentLaunchForce = m_MinLaunchForce;
+
+        m_ShootingAudio.clip = m_ChargingClip;
+        m_ShootingAudio.Play();
+    }
+
+    [PunRPC]
+    void mouseButtonFire()
+    {
+        // Holding the fire button, not yet fired
+        m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
+
+        m_AimSlider.value = m_CurrentLaunchForce;
+    }
+
+    [PunRPC]
+    void mouseButtonUpFire()
+    {
+        Fire();
+    }
 
     public void Fire()
     {
@@ -107,6 +150,5 @@ public class TankShooting : MonoBehaviour
 
         // Reset the launch force.  This is a precaution in case of missing button events.
         m_CurrentLaunchForce = m_MinLaunchForce;
-
     }
 }
