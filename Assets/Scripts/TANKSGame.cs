@@ -5,10 +5,12 @@ public class TANKSGame : MonoBehaviour
     public const float PLAYER_RESPAWN_TIME = 3.0f;
 
     public const int PLAYER_MAX_LIVES = 3;
+    public const int PLAYER_HP = 100;
 
     public const string PLAYER_LIVES = "PlayerLives";
     public const string PLAYER_READY = "isPlayerReady";
     public const string PLAYER_LOADED_LEVEL = "PlayerLoadedLevel";
+
 
     public static Color GetColor(int colorChoice)
     {

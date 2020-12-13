@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using ExitGames.Client.Photon;
 
 public class NetworkSample : MonoBehaviourPunCallbacks
 {
@@ -15,14 +16,15 @@ public class NetworkSample : MonoBehaviourPunCallbacks
         //PhotonNetwork.ConnectUsingSettings();
     }
 
+
+
     // Start is called before the first frame update
     void Start()
     {
         Hashtable playerProperty = PhotonNetwork.LocalPlayer.CustomProperties;
 
         int i = (int)playerProperty["Number"];
-        PhotonNetwork.Instantiate("NetworkTank", spawnPositions[i].position, spawnPositions[i].rotation)
-            .GetComponent<NetworkPlayer>().m_PlayerColor = (Color)playerProperty["Color"];
+        PhotonNetwork.Instantiate("NetworkTank", spawnPositions[i].position, spawnPositions[i].rotation);
     }
 
     // Update is called once per frame
@@ -41,5 +43,32 @@ public class NetworkSample : MonoBehaviourPunCallbacks
     {
 
     }
+
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    {
+    }
+
+    public override void OnLeftRoom()
+    {
+        PhotonNetwork.Disconnect();
+    }
+
     #endregion
+
+    private bool checkAllPlayerLoadedLevel()
+    {
+        foreach(Player p in PhotonNetwork.PlayerList)
+        {
+            object playerLoadedLevel;
+
+            if(p.CustomProperties.TryGetValue(TANKSGame.PLAYER_LOADED_LEVEL, out playerLoadedLevel))
+            {
+                if ((bool)playerLoadedLevel) continue;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
 }

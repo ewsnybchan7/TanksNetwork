@@ -59,7 +59,7 @@ public class TankShooting : MonoBehaviour
             // ... use the max force and launch the shell.
             //m_CurrentLaunchForce = m_MaxLaunchForce;
             //Fire();
-            pv.RPC("maxTimeFire", RpcTarget.All);
+            pv.RPC("maxTimeFire", RpcTarget.AllViaServer);
         }
         // Otherwise, fire 버튼 눌렸을때(눌린상태)(처음누른상태 진입 체크)
         else if (Input.GetMouseButtonDown(0))
@@ -71,7 +71,7 @@ public class TankShooting : MonoBehaviour
             //// Change the clip to the charging clip and start it playing.
             //m_ShootingAudio.clip = m_ChargingClip; //차징 클립 재생
             //m_ShootingAudio.Play();
-            pv.RPC("mouseButtonDownFire", RpcTarget.All);
+            pv.RPC("mouseButtonDownFire", RpcTarget.AllViaServer);
         }
         // Otherwise, 버튼 눌린(홀드) 상태에서 발사 안됬을 경우
         else if (Input.GetMouseButton(0) && !m_Fired)
@@ -87,7 +87,7 @@ public class TankShooting : MonoBehaviour
         {
             // ... launch the shell.
             //Fire();
-            pv.RPC("mouseButtonUpFire", RpcTarget.All);
+            pv.RPC("mouseButtonUpFire", RpcTarget.AllViaServer);
         }
     }
 
@@ -134,6 +134,11 @@ public class TankShooting : MonoBehaviour
         // Create an instance of the shell and store a reference to it's rigidbody.
         Rigidbody shellInstance =
             Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
+
+        if (GetComponent<NetworkPlayer>())
+            shellInstance.GetComponent<ShellExplosion>().ownerIsPlayer = true;
+        else
+            shellInstance.GetComponent<ShellExplosion>().ownerIsPlayer = false;
 
         //AI 라면 평균값으로 shell 발사
         if (m_IsAI)
