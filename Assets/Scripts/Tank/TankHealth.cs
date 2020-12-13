@@ -9,8 +9,9 @@ public class TankHealth : MonoBehaviour
     public Color m_FullHealthColor = Color.green;  
     public Color m_ZeroHealthColor = Color.red;    
     public GameObject m_ExplosionPrefab;
-    
-    
+
+    public float getCurHealth() { return m_CurrentHealth;}
+
     private AudioSource m_ExplosionAudio;          
     private ParticleSystem m_ExplosionParticles;   
     private float m_CurrentHealth;  
@@ -23,10 +24,6 @@ public class TankHealth : MonoBehaviour
         m_ExplosionAudio = m_ExplosionParticles.GetComponent<AudioSource>();
 
         m_ExplosionParticles.gameObject.SetActive(false);
-        // SetActive(false)
-        // 계층 구조에서 비활성화
-        // destory와 instantiate는 성능 저하를 일으킨다
-        // 생성과 할당 해제 자체가 성능에 큰 부담을 준다
     }
 
 
@@ -34,7 +31,6 @@ public class TankHealth : MonoBehaviour
     {
         m_CurrentHealth = m_StartingHealth;
         m_Dead = false;
-        m_ExplosionParticles.gameObject.SetActive(false);
 
         SetHealthUI();
     }
@@ -47,10 +43,11 @@ public class TankHealth : MonoBehaviour
 
         SetHealthUI();
 
-        if(m_CurrentHealth <= 0f && !m_Dead)
+        if (m_CurrentHealth <= 0f && !m_Dead)
         {
             OnDeath();
         }
+
     }
 
 
@@ -60,8 +57,6 @@ public class TankHealth : MonoBehaviour
         m_Slider.value = m_CurrentHealth;
 
         m_FillImage.color = Color.Lerp(m_ZeroHealthColor, m_FullHealthColor, m_CurrentHealth / m_StartingHealth);
-        // Color.Lerp: 두 개의 색 벡터를 이용하여 그 사이에 있는 값을 선택
-        // flaot 값으로 비율을 선택
     }
 
 
@@ -74,9 +69,8 @@ public class TankHealth : MonoBehaviour
         m_ExplosionParticles.gameObject.SetActive(true);
 
         m_ExplosionParticles.Play();
-
         m_ExplosionAudio.Play();
 
-        gameObject.SetActive(false);
+        gameObject.SetActive(false); //tank off
     }
 }

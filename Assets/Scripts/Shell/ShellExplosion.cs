@@ -2,54 +2,69 @@
 
 public class ShellExplosion : MonoBehaviour
 {
-    public LayerMask m_TankMask;
+    public LayerMask m_TankMask; //탱크가 존재하는 레이어를 마스킹
     public ParticleSystem m_ExplosionParticles;       
     public AudioSource m_ExplosionAudio;              
-    public float m_MaxDamage = 100f;                  
-    public float m_ExplosionForce = 1000f;            
-    public float m_MaxLifeTime = 2f;                  
-    public float m_ExplosionRadius = 5f;              
+    public float m_MaxDamage = 100f;          //최대 데미지        
+    public float m_ExplosionForce = 700f;            
+    public float m_MaxLifeTime = 2f;         //포탄 유지 시간         
+    public float m_ExplosionRadius = 5f;    //포탄 폭발 반경          
 
 
     private void Start()
     {
-        Destroy(gameObject, m_MaxLifeTime);
+        Destroy(gameObject, m_MaxLifeTime); //유지 시간 이휴에 object를 destroy
     }
 
 
     private void OnTriggerEnter(Collider other)
     {
         // Find all the tanks in an area around the shell and damage them.
-        // Physics.OverlapSphere: 현재 본인의 위치에서 반지름 값 만큼의 범위에 있는 모든 Collider를 얻을 수 있는 함수
-        // layerMask에 의해 특정 layer만을 얻을 수 찾을 수 있음
-        Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius, m_TankMask);
+        // Collect all the colliders in a sphere from the shell's current position to a radius of the explosion radius.
+        Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius, m_TankMask); //폭발 반경내에 있는 tankmask있는 colㅣider 를 구형범위로 수집
 
+        // Go through all the colliders...
         for (int i = 0; i < colliders.Length; i++)
         {
-            Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody>();
+            // ... and find their rigidbody.
+            Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody>(); //반경 안의 collider의 rigidbody를 가져옴
 
-            if (!targetRigidbody) continue;
+            // If they don't have a rigidbody, go on to the next collider.
+            if (!targetRigidbody)
+                continue;
 
-            // Rigidbody.AddExplosionForce: 객체의 Rigidbody를 이용하여 폭발력을 적용 받음
-            // float: 폭발력 / Vector3: 폭발 위치(원점) / float: 폭발 원 반경
+            // Add an explosion force.
             targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);
 
+            // Find the TankHealth script associated with the rigidbody.
             TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth>();
 
-            if (!targetHealth) continue;
+            // If there is no TankHealth script attached to the gameobject, go on to the next collider.
+            if (!targetHealth)
+                continue;
 
-            float damage = CalculateDamage(targetRigidbody.position);
+            // Calculate the amount of damage the target should take based on it's distance from the shell.
+            float damage = CalculateDamage(targetRigidbody.position); // target rigidbody와의 거리에 따라 데미지 계산
 
+            // Deal this damage to the tank.
             targetHealth.TakeDamage(damage);
         }
 
+        // Unparent the particles from the shell.
         m_ExplosionParticles.transform.parent = null;
 
+        // Play the particle system.
         m_ExplosionParticles.Play();
 
+        // Play the explosion sound effect.
         m_ExplosionAudio.Play();
 
-        Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.main.duration);
+        // Once the particles have finished, destroy the gameobject they are on.
+        ParticleSystem.MainModule mainModule = m_ExplosionParticles.main;
+
+        Destroy(m_ExplosionParticles.gameObject, mainModule.duration);
+
+        // Destroy the shell.
         Destroy(gameObject);
     }
 
@@ -57,14 +72,19 @@ public class ShellExplosion : MonoBehaviour
     private float CalculateDamage(Vector3 targetPosition)
     {
         // Calculate the amount of damage a target should take based on it's position.
-        Vector3 explosionToTarget = targetPosition - transform.position; // 원점에서 탱크까지의 벡터
+        // Create a vector from the shell to the target.
+        Vector3 explosionToTarget = targetPosition - transform.position;
 
-        float explosionDistance = explosionToTarget.magnitude; // 벡터의 크기
+        // Calculate the distance from the shell to the target.
+        float explosionDistance = explosionToTarget.magnitude;
 
-        float relativeDistance = (m_ExplosionRadius - explosionDistance) / m_ExplosionRadius; // 상대 길이(비율)
+        // Calculate the proportion of the maximum distance (the explosionRadius) the target is away.
+        float relativeDistance = (m_ExplosionRadius - explosionDistance) / m_ExplosionRadius;
 
-        float damage = relativeDistance * m_MaxDamage; // 상대 길이에 따른 데미지
+        // Calculate damage as this proportion of the maximum possible damage.
+        float damage = relativeDistance * m_MaxDamage;
 
+        // Make sure that the minimum damage is always 0.
         damage = Mathf.Max(0f, damage);
 
         return damage;
