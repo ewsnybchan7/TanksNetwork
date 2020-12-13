@@ -70,15 +70,16 @@ public class TankMovement : MonoBehaviour, IPunObservable
             m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
         }
 
-        if (!pv.IsMine)
+        if (pv && !pv.IsMine)
         {
             transform.position = Vector3.Lerp(m_Transform.position, curPos, Time.deltaTime * 3.0f);
             transform.rotation = Quaternion.Slerp(m_Transform.rotation, curRot, Time.deltaTime * 3.0f);
         }
 
         //EngineAudio();
-        pv.RPC("EngineAudio", RpcTarget.AllBuffered);
+        if(pv) pv.RPC("EngineAudio", RpcTarget.AllBuffered);
     }
+
 
     [PunRPC]
     private void EngineAudio()
@@ -104,9 +105,10 @@ public class TankMovement : MonoBehaviour, IPunObservable
         }
     }
 
+
     private void FixedUpdate() //물리 엔진이 업데이트 될때마다 호출
     {
-        if (pv.IsMine)
+        if (pv && pv.IsMine)
         {
             // Move and turn the tank.
             Move();
