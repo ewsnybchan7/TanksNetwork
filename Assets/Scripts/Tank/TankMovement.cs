@@ -5,7 +5,7 @@ using Photon.Pun;
 public class TankMovement : MonoBehaviour, IPunObservable
 {
     public int m_PlayerNumber = 1;         
-    public float m_Speed = 12f;            
+    public float m_Speed = 12f;          
     public float m_TurnSpeed = 180f;       
     public AudioSource m_MovementAudio;    
     public AudioClip m_EngineIdling;       

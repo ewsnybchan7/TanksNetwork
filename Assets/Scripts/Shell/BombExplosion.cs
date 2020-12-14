@@ -9,14 +9,14 @@ public class BombExplosion : MonoBehaviour
     public GameObject explosionPrefab;
     public AudioSource m_ExplosionAudio;
     public float m_MaxDamage = 100f;          //최대 데미지        
-    public float m_ExplosionForce = 700f;
+    public float m_ExplosionForce = 1000f;
     public float m_MaxLifeTime = 3.9f;         //포탄 유지 시간         
-    public float m_ExplosionRadius = 5f;    //포탄 폭발 반경    
+    public float m_ExplosionRadius = 15f;    //포탄 폭발 반경    
     // Start is called before the first frame update
     public void inite()
     {
         //Destroy(gameObject, m_MaxLifeTime); //유지 시간 이휴에 object를 destroy
-        Invoke("Detonate", 3.9f);
+        Invoke("Detonate", 3.5f);
 
     }
 
@@ -44,8 +44,9 @@ public class BombExplosion : MonoBehaviour
                 continue;
 
             // Calculate the amount of damage the target should take based on it's distance from the shell.
-            float damage = CalculateDamage(targetRigidbody.position); // target rigidbody와의 거리에 따라 데미지 계산
+            //float damage = CalculateDamage(targetRigidbody.position); // target rigidbody와의 거리에 따라 데미지 계산
 
+            float damage = 50.0f;
             // Deal this damage to the tank.
             targetHealth.TakeDamage(damage);
 

@@ -71,6 +71,7 @@ public class Bomber_movement_AI : FSM
             m_CurState = FSMState.Dead;
     }
 
+
     private void UpdateDeadState()
     {
         if (!isDead)
@@ -88,6 +89,8 @@ public class Bomber_movement_AI : FSM
 
         BombAnimator.SetBool("isDetonate", true);
         
+
+
         Collider[] players = Physics.OverlapSphere(transform.position, 5.0f, LayerMask.GetMask("Players"));
         if(players.Length > 0)
             player = players[0].gameObject;
@@ -134,7 +137,7 @@ public class Bomber_movement_AI : FSM
 
         player = GameObject.FindGameObjectWithTag("usr");
 
-        if(!player)
+        if(player)
             navMeshAgent.destination = player.GetComponent<Transform>().position;
     }
 
