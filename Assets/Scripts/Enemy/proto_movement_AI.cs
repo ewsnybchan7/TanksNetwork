@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.PlayerLoop;
-
+using Photon.Pun;
 
 public class proto_movement_AI : FSM
 {
@@ -107,7 +107,8 @@ public class proto_movement_AI : FSM
 
         if (elapsedTime > shootRate)
         {
-            this.tankShooter.Fire();
+            //this.tankShooter.Fire();
+            tankShooter.GetComponent<PhotonView>().RPC("Fire", RpcTarget.AllBufferedViaServer);
             elapsedTime = 0;
         }
     }

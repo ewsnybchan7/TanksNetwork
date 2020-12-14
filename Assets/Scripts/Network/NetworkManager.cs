@@ -19,7 +19,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         spawnEnemies = FindObjectsOfType<SpawnEnemy>();
     }
-
+    
     // Update is called once per frame
     void Update()
     {
