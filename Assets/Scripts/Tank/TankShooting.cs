@@ -143,8 +143,6 @@ public class TankShooting : MonoBehaviour, IPunObservable
         else
             shellInstance.GetComponent<ShellExplosion>().ownerIsPlayer = false;
 
-        shellInstance.GetComponent<ShellExplosion>().shotPvid = pv.ViewID;
-
         //AI 라면 평균값으로 shell 발사
         if (m_IsAI)
         {
