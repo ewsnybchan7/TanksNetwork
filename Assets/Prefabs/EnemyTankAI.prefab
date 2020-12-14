@@ -1081,8 +1081,6 @@ GameObject:
   - component: {fileID: 3441849867579823326}
   - component: {fileID: 7912864834548183596}
   - component: {fileID: 1853204706}
-  - component: {fileID: -5688508019250770726}
-  - component: {fileID: -132326968403664603}
   m_Layer: 10
   m_Name: EnemyTankAI
   m_TagString: Untagged
@@ -1444,46 +1442,6 @@ MonoBehaviour:
   Attack_icon: {fileID: 5819151133266829325}
   Chase_icon: {fileID: 6233749290317020143}
   m_CurState: 1
---- !u!114 &-5688508019250770726
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 307917918253135790}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  observableSearch: 2
-  Synchronization: 3
-  OwnershipTransfer: 0
-  ObservedComponents:
-  - {fileID: 290620058175408075}
-  - {fileID: 1853204706}
-  - {fileID: -132326968403664603}
-  viewIdField: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
---- !u!114 &-132326968403664603
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 307917918253135790}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
 --- !u!1 &5819151133266829325
 GameObject:
   m_ObjectHideFlags: 0

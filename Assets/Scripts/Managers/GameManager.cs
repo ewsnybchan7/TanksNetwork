@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon.Pun;
-using Photon.Realtime;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -21,12 +20,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     private TankManager m_RoundWinner;
     private TankManager m_GameWinner;
 
-    public SpawnEnemy[] spawnPoints;
 
-    private void Awake()
-    {
-        spawnPoints = FindObjectsOfType<SpawnEnemy>();
-    }
+    // Photon Variable
+    //public TankManager m_Tank;
 
     private void Start()
     {
@@ -40,12 +36,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
 
         //StartCoroutine(GameLoop());
-
-        //foreach(SpawnEnemy sp in spawnPoints)
-        //{
-        //    sp.isGame = true;
-        //    sp.StartCoroutine(sp.spawnEnmey());
-        //}
     }
 
     #region Photon Callbacks
@@ -54,11 +44,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         int i = PhotonNetwork.CountOfPlayersInRooms;
         m_Tanks[i].m_Instance =
             PhotonNetwork.Instantiate("NetworkTank", m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
-    }
-
-    public override void OnLeftRoom()
-    {
-        Debug.Log("Left!!!");
     }
 
     #endregion
