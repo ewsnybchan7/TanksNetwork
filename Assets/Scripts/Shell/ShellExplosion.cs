@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Photon.Pun;
 
 public class ShellExplosion : MonoBehaviour
 {
@@ -23,11 +24,6 @@ public class ShellExplosion : MonoBehaviour
         // Collect all the colliders in a sphere from the shell's current position to a radius of the explosion radius.
         if (ownerIsPlayer)
         {
-            if (other.GetComponent<NetworkPlayer>())
-            {
-                return;
-            }
-
             m_TankMask = LayerMask.GetMask("AI");
         }
         else
@@ -59,9 +55,13 @@ public class ShellExplosion : MonoBehaviour
 
             // Calculate the amount of damage the target should take based on it's distance from the shell.
             //float damage = CalculateDamage(targetRigidbody.position); // target rigidbody와의 거리에 따라 데미지 계산
-            float damage = 10.0f;
-            // Deal this damage to the tank.
-            targetHealth.TakeDamage(damage);
+            if (!GetComponent<PhotonView>().IsMine && colliders[i].GetComponent<PhotonView>().IsMine)
+            {
+                float damage = 10.0f;
+                // Deal this damage to the tank.
+
+                targetHealth.TakeDamage(damage);
+            }
         }
 
         // Unparent the particles from the shell.
