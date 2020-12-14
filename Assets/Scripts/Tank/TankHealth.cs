@@ -85,7 +85,7 @@ public class TankHealth : MonoBehaviour, IPunObservable
         }
         else
         {
-            m_CurrentHealth = (float)stream.ReceiveNext();
+            m_Slider.value = (float)stream.ReceiveNext();
         }
     }
 }
