@@ -20,10 +20,10 @@ public class Missile_tracking : MonoBehaviour
         GameObject target = GameObject.FindGameObjectWithTag("usr");
         missileTarget = target.GetComponent<Transform>();
         if (elasped > 0.5f)
-            missileRigidbody.velocity = transform.up * missilseVelocity;
+            missileRigidbody.velocity = transform.forward * missilseVelocity;
         else
         {
-            missileRigidbody.velocity = transform.forward * missilseVelocity;
+            missileRigidbody.velocity = transform.up * missilseVelocity;
 
         }
 

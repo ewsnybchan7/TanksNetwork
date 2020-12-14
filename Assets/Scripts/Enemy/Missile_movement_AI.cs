@@ -89,7 +89,7 @@ public class Missile_movement_AI : FSM
         iconColorP.material.color = new Color(1, 1, 1, 0);
         iconColorA.material.color = new Color(1, 1, 1, 1);
         iconColorC.material.color = new Color(1, 1, 1, 0);
-        Collider[] players = Physics.OverlapSphere(transform.position, 20.0f, LayerMask.GetMask("Players"));
+        Collider[] players = Physics.OverlapSphere(transform.position, 40.0f, LayerMask.GetMask("Players"));
 
         if (players.Length == 0)
         {
@@ -103,7 +103,9 @@ public class Missile_movement_AI : FSM
 
         Vector3 _direction = (player.transform.position - transform.position).normalized;
         Quaternion _lookRotation = Quaternion.LookRotation(_direction);
-        transform.rotation = Quaternion.Slerp(transform.rotation, _lookRotation, Time.deltaTime * 3);
+        
+
+        transform.rotation = Quaternion.Slerp(_lookRotation, transform.rotation, Time.deltaTime * 3);
 
         if (elapsedTime > shootRate)
         {
@@ -114,7 +116,7 @@ public class Missile_movement_AI : FSM
 
     private void UpdatePatrolState()
     {
-        Collider[] players = Physics.OverlapSphere(transform.position, 20.0f, LayerMask.GetMask("Players"));
+        Collider[] players = Physics.OverlapSphere(transform.position, 30.0f, LayerMask.GetMask("Players"));
 
         iconColorP.material.color = new Color(1, 1, 1, 1);
         iconColorA.material.color = new Color(1, 1, 1, 0);
@@ -143,8 +145,8 @@ public class Missile_movement_AI : FSM
         iconColorA.material.color = new Color(1, 1, 1, 0); // 알파값 0 
         iconColorC.material.color = new Color(1, 1, 1, 1);
 
-        Collider[] players = Physics.OverlapSphere(transform.position, 10.0f, LayerMask.GetMask("Players"));
-        Collider[] far_players = Physics.OverlapSphere(transform.position, 20.0f, LayerMask.GetMask("Players"));
+        Collider[] players = Physics.OverlapSphere(transform.position, 20.0f, LayerMask.GetMask("Players"));
+        Collider[] far_players = Physics.OverlapSphere(transform.position, 40.0f, LayerMask.GetMask("Players"));
 
 
         if (players.Length > 0)

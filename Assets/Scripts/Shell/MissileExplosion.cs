@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using JetBrains.Annotations;
+using UnityEngine;
 
 public class MissileExplosion : MonoBehaviour
 {
@@ -7,15 +8,34 @@ public class MissileExplosion : MonoBehaviour
     public AudioSource m_ExplosionAudio;
     public float m_MaxDamage = 100f;          //최대 데미지        
     public float m_ExplosionForce = 700f;
-    public float m_MaxLifeTime = 5f;         //포탄 유지 시간         
-    public float m_ExplosionRadius = 5f;    //포탄 폭발 반경          
-
+    public float m_MaxLifeTime = 3f;         //포탄 유지 시간         
+    public float m_ExplosionRadius = 8f;    //포탄 폭발 반경          
+    public float elasped;
 
     private void Start()
     {
-        Destroy(gameObject, m_MaxLifeTime); //유지 시간 이휴에 object를 destroy
+        elasped = 0;
+        
     }
 
+    private void FixedUpdate()
+    {
+        elasped += Time.deltaTime;
+        if (elasped > m_MaxLifeTime)
+        {
+            // Unparent the particles from the shell.
+            m_ExplosionParticles.transform.parent = null;
+
+            // Play the particle system.
+            m_ExplosionParticles.Play();
+            ParticleSystem.MainModule mainModule = m_ExplosionParticles.main;
+            Destroy(m_ExplosionParticles.gameObject, mainModule.duration);
+            Destroy(gameObject);
+
+            return;
+        }
+            
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -44,8 +64,8 @@ public class MissileExplosion : MonoBehaviour
                 continue;
 
             // Calculate the amount of damage the target should take based on it's distance from the shell.
-            float damage = CalculateDamage(targetRigidbody.position); // target rigidbody와의 거리에 따라 데미지 계산
-
+            //float damage = CalculateDamage(targetRigidbody.position); // target rigidbody와의 거리에 따라 데미지 계산
+            float damage = 25.0f;
             // Deal this damage to the tank.
             targetHealth.TakeDamage(damage);
         }
