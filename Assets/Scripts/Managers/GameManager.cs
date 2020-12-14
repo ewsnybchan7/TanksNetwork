@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -33,12 +34,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         m_StartWait = new WaitForSeconds(m_StartDelay);
         m_EndWait = new WaitForSeconds(m_EndDelay);
 
-        //SpawnAllTanks();
-
-
-        //SetCameraTargets();
-
-
         //StartCoroutine(GameLoop());
 
         //foreach(SpawnEnemy sp in spawnPoints)
@@ -49,16 +44,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     #region Photon Callbacks
-    public override void OnJoinedRoom()
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
-        int i = PhotonNetwork.CountOfPlayersInRooms;
-        m_Tanks[i].m_Instance =
-            PhotonNetwork.Instantiate("NetworkTank", m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
-    }
 
-    public override void OnLeftRoom()
-    {
-        Debug.Log("Left!!!");
     }
 
     #endregion
