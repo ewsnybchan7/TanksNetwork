@@ -53,23 +53,19 @@ public class ShellExplosion : MonoBehaviour
             // If there is no TankHealth script attached to the gameobject, go on to the next collider.
             if (!targetHealth)
                 continue;
-            
+
             // Calculate the amount of damage the target should take based on it's distance from the shell.
             //float damage = CalculateDamage(targetRigidbody.position); // target rigidbody와의 거리에 따라 데미지 계산
             // 플레이어가 적을 맞췃을 때
-            if (!PhotonNetwork.GetPhotonView(shotPvid).IsMine && colliders[i].GetComponent<PhotonView>().IsSceneView)
-            {
-                float damage = 10.0f;
-                // Deal this damage to the tank.
+            if (PhotonNetwork.GetPhotonView(shotPvid).IsMine && colliders[i].GetComponent<PhotonView>().IsSceneView)
+                continue;
+            else if (PhotonNetwork.GetPhotonView(shotPvid).IsSceneView && colliders[i].GetComponent<PhotonView>().IsSceneView)
+                continue;
 
-                targetHealth.TakeDamage(damage);
-            }
-            else if(PhotonNetwork.GetPhotonView(shotPvid).IsSceneView && !colliders[i].GetComponent<PhotonView>().IsMine)
-            {
-                float damage = 10.0f;
+            float damage = 10.0f;
+            // Deal this damage to the tank.
 
-                targetHealth.TakeDamage(damage);
-            }
+            targetHealth.TakeDamage(damage);
         }
 
         // Unparent the particles from the shell.
