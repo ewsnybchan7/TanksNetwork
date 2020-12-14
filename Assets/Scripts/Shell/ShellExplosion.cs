@@ -12,6 +12,7 @@ public class ShellExplosion : MonoBehaviour
     public float m_ExplosionRadius = 5f;    //포탄 폭발 반경          
 
     public bool ownerIsPlayer;
+    public int shotPvid;
 
     private void Start()
     {
@@ -53,9 +54,11 @@ public class ShellExplosion : MonoBehaviour
             if (!targetHealth)
                 continue;
 
+            Debug.Log(GetComponent<PhotonView>().IsSceneView);
+
             // Calculate the amount of damage the target should take based on it's distance from the shell.
             //float damage = CalculateDamage(targetRigidbody.position); // target rigidbody와의 거리에 따라 데미지 계산
-            if (!GetComponent<PhotonView>().IsMine && colliders[i].GetComponent<PhotonView>().IsMine)
+            if (!PhotonNetwork.GetPhotonView(shotPvid).IsMine && colliders[i].GetComponent<PhotonView>().IsMine)
             {
                 float damage = 10.0f;
                 // Deal this damage to the tank.
