@@ -56,11 +56,6 @@ public class ShellExplosion : MonoBehaviour
 
             // Calculate the amount of damage the target should take based on it's distance from the shell.
             //float damage = CalculateDamage(targetRigidbody.position); // target rigidbody와의 거리에 따라 데미지 계산
-            // 플레이어가 적을 맞췃을 때
-            if (colliders[i].GetComponent<PhotonView>().IsSceneView && PhotonNetwork.GetPhotonView(shotPvid).IsMine)
-                continue;
-            if (PhotonNetwork.GetPhotonView(shotPvid).IsSceneView && !colliders[i].GetComponent<PhotonView>().IsMine)
-                continue;
 
             float damage = 10.0f;
             // Deal this damage to the tank.

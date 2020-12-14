@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class TankHealth : MonoBehaviour
+public class TankHealth : MonoBehaviour, IPunObservable
 {
     public float m_StartingHealth = 100f;          
     public Slider m_Slider;                        
@@ -39,6 +41,8 @@ public class TankHealth : MonoBehaviour
     public void TakeDamage(float amount)
     {
         // Adjust the tank's current health, update the UI based on the new health and check whether or not the tank is dead.
+        //Hashtable playerProperty = GetComponent<PhotonView>().Owner.CustomProperties;
+
         m_CurrentHealth -= amount;
 
         SetHealthUI();
@@ -71,5 +75,17 @@ public class TankHealth : MonoBehaviour
         m_ExplosionAudio.Play();
 
         gameObject.SetActive(false); //tank off
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if(stream.IsWriting)
+        {
+            stream.SendNext(m_CurrentHealth);
+        }
+        else
+        {
+            m_CurrentHealth = (float)stream.ReceiveNext();
+        }
     }
 }
