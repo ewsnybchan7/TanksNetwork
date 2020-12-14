@@ -36,52 +36,6 @@ public class Missile_shooting : MonoBehaviour
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime; //차징 속도 계산
     }
 
-
-    private void Update()
-    {
-        if (m_IsAI)
-        {
-            return;
-        }
-        // Track the current state of the fire button and make decisions based on the current launch force.
-        // 에임 슬라이더 디폴트 값으로 설정
-        m_AimSlider.value = m_MinLaunchForce;
-
-        // If the max force has been exceeded and the shell hasn't yet been launched...
-        if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired)
-        {
-            // ... use the max force and launch the shell.
-            m_CurrentLaunchForce = m_MaxLaunchForce;
-            Fire();
-        }
-        // Otherwise, fire 버튼 눌렸을때(눌린상태)(처음누른상태 진입 체크)
-        else if (Input.GetButtonDown(m_FireButton))
-        {
-            // ... reset the fired flag and reset the launch force.
-            m_Fired = false;
-            m_CurrentLaunchForce = m_MinLaunchForce;
-
-            // Change the clip to the charging clip and start it playing.
-            m_ShootingAudio.clip = m_ChargingClip; //차징 클립 재생
-            m_ShootingAudio.Play();
-        }
-        // Otherwise, 버튼 눌린(홀드) 상태에서 발사 안됬을 경우
-        else if (Input.GetButton(m_FireButton) && !m_Fired)
-        {
-            // Increment the launch force and update the slider.
-            m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
-
-            m_AimSlider.value = m_CurrentLaunchForce;
-        }
-        // Otherwise, 버튼 릴리스 상태에서 발사 안됬을 경우
-        else if (Input.GetButtonUp(m_FireButton) && !m_Fired)
-        {
-            // ... launch the shell.
-            Fire();
-        }
-    }
-
-
     public void Fire()
     {
         // Instantiate and launch the shell.
@@ -95,11 +49,12 @@ public class Missile_shooting : MonoBehaviour
         //AI 라면 평균값으로 shell 발사
         if (m_IsAI)
         {
-            m_CurrentLaunchForce = m_MaxLaunchForce / 2.0f;
+            // 타겟과 거리별로 lanch force 조절하는 구문 필요
+            m_CurrentLaunchForce = m_MaxLaunchForce / 3.0f;
         }
 
         // Set the shell's velocity to the launch force in the fire position's forward direction.
-        shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward; ;
+        //shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward; ;
 
         // Change the clip to the firing clip and play it.
         m_ShootingAudio.clip = m_FireClip;
