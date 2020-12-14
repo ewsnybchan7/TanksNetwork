@@ -15,6 +15,7 @@ public class SpawnEnemy : MonoBehaviour
     public float spawnTime;
 
     public int spawnNum;
+    public int maxSpawnNum = 5;
 
     // Start is called before the first frame update
     void Start()
@@ -30,7 +31,7 @@ public class SpawnEnemy : MonoBehaviour
 
     public IEnumerator spawnEnmey()
     {
-        while(isGame && spawnNum < 10)
+        while(isGame && spawnNum < maxSpawnNum)
         {
             if (normal) normalSpawn();
             else if (shotgun) ;
@@ -44,6 +45,21 @@ public class SpawnEnemy : MonoBehaviour
     }
 
     private void normalSpawn()
+    {
+        PhotonNetwork.InstantiateRoomObject("EnemyTankAI", this.transform.position, this.transform.rotation);
+    }
+
+    private void shotgunSpawn()
+    {
+        PhotonNetwork.InstantiateRoomObject("EnemyTankAI", this.transform.position, this.transform.rotation);
+    }
+
+    private void missileSpawn()
+    {
+        PhotonNetwork.InstantiateRoomObject("EnemyTankAI", this.transform.position, this.transform.rotation);
+    }
+
+    private void bombSpawn()
     {
         PhotonNetwork.InstantiateRoomObject("EnemyTankAI", this.transform.position, this.transform.rotation);
     }
