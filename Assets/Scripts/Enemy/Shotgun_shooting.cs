@@ -99,7 +99,7 @@ public class Shotgun_shooting: MonoBehaviour
         if (m_IsAI)
         {
             //타겟 거리 따라서 발사 힘 다르게 하는것 필요 , 아니면 maxLanchForce 조절하기
-            m_CurrentLaunchForce = m_MaxLaunchForce / 3.0f;
+            m_CurrentLaunchForce = m_MaxLaunchForce / 3.5f;
         }
 
         // Set the shell's velocity to the launch force in the fire position's forward direction.

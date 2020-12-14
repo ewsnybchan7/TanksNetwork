@@ -89,7 +89,7 @@ public class Shotgun_movement_AI : FSM
         iconColorP.material.color = new Color(1, 1, 1, 0);
         iconColorA.material.color = new Color(1, 1, 1, 1);
         iconColorC.material.color = new Color(1, 1, 1, 0);
-        Collider[] players = Physics.OverlapSphere(transform.position, 20.0f, LayerMask.GetMask("Players"));
+        Collider[] players = Physics.OverlapSphere(transform.position, 10.0f, LayerMask.GetMask("Players"));
 
         if (players.Length == 0)
         {
@@ -143,7 +143,7 @@ public class Shotgun_movement_AI : FSM
         iconColorA.material.color = new Color(1, 1, 1, 0); // 알파값 0 
         iconColorC.material.color = new Color(1, 1, 1, 1);
 
-        Collider[] players = Physics.OverlapSphere(transform.position, 10.0f, LayerMask.GetMask("Players"));
+        Collider[] players = Physics.OverlapSphere(transform.position, 5.0f, LayerMask.GetMask("Players"));
         Collider[] far_players = Physics.OverlapSphere(transform.position, 20.0f, LayerMask.GetMask("Players"));
 
 
