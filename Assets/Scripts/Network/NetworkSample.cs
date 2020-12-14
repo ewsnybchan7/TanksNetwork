@@ -21,10 +21,10 @@ public class NetworkSample : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        //Hashtable playerProperty = PhotonNetwork.LocalPlayer.CustomProperties;
+        Hashtable playerProperty = PhotonNetwork.LocalPlayer.CustomProperties;
 
-        //int i = (int)playerProperty["Number"];
-        //PhotonNetwork.Instantiate("NetworkTank", spawnPositions[i].position, spawnPositions[i].rotation);
+        int i = (int)playerProperty["Number"];
+        PhotonNetwork.Instantiate("NetworkTank", spawnPositions[i].position, spawnPositions[i].rotation);
     }
 
     // Update is called once per frame
@@ -34,23 +34,14 @@ public class NetworkSample : MonoBehaviourPunCallbacks
     }
 
     #region Photon Callbacks
-    public override void OnConnectedToMaster()
-    {
-        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 4 }, null);
-    }
-
-    public override void OnJoinedRoom()
-    {
-
-    }
+    //public override void OnConnectedToMaster()
+    //{
+    //    PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 4 }, null);
+    //}
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
-    }
 
-    public override void OnLeftRoom()
-    {
-        PhotonNetwork.Disconnect();
     }
 
     #endregion
