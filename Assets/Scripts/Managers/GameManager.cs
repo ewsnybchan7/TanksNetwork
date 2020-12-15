@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         foreach (NetworkPlayer player in m_Players)
         {
-            player.photonView.RPC("Reset", RpcTarget.AllBuffered);
+            player.photonView.RPC("initPlayer", RpcTarget.AllBuffered);
         }
 
         if (!NoneTankLeft())

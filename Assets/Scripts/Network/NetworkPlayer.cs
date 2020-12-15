@@ -83,7 +83,7 @@ public class NetworkPlayer : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void Reset()
+    public void init()
     {
         m_Instance.transform.position = m_SpawnPoint.position;
         m_Instance.transform.rotation = m_SpawnPoint.rotation;
