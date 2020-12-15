@@ -50,8 +50,8 @@ public class NetworkPlayer : MonoBehaviourPunCallbacks
         {
             renderers[i].material.color = m_PlayerColor;
         }
-        
 
+        GameManager.gameManager.m_Players.Add(this);
     }
 
     // Update is called once per frame

@@ -22,8 +22,8 @@ public class NetworkSample : MonoBehaviourPunCallbacks
         Hashtable playerProperty = PhotonNetwork.LocalPlayer.CustomProperties;
 
         int i = (int)playerProperty["Number"];
-        
-        GameManager.gameManager.m_Players.Add(PhotonNetwork.Instantiate("NetworkTank", spawnPositions[i].position, spawnPositions[i].rotation).GetComponent<NetworkPlayer>());
+
+        PhotonNetwork.Instantiate("NetworkTank", spawnPositions[i].position, spawnPositions[i].rotation);
     }
 
     // Update is called once per frame

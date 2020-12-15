@@ -127,8 +127,40 @@ public class TankShooting : MonoBehaviour, IPunObservable
         Fire();
     }
 
-    [PunRPC]
     public void Fire()
+    {
+        // Instantiate and launch the shell.
+        // Set the fired flag so only Fire is only called once.
+        m_Fired = true;
+
+        // Create an instance of the shell and store a reference to it's rigidbody.
+        Rigidbody shellInstance =
+            Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
+
+        if (GetComponent<NetworkPlayer>())
+            shellInstance.GetComponent<ShellExplosion>().ownerIsPlayer = true;
+        else
+            shellInstance.GetComponent<ShellExplosion>().ownerIsPlayer = false;
+
+        //AI 라면 평균값으로 shell 발사
+        if (m_IsAI)
+        {
+            m_CurrentLaunchForce = m_MaxLaunchForce / 2.0f;
+        }
+
+        // Set the shell's velocity to the launch force in the fire position's forward direction.
+        shellInstance.velocity = pv.IsMine ? m_CurrentLaunchForce * m_FireTransform.forward : m_CurrentLaunchForce * shotVector;
+
+        // Change the clip to the firing clip and play it.
+        m_ShootingAudio.clip = m_FireClip;
+        m_ShootingAudio.Play();
+
+        // Reset the launch force.  This is a precaution in case of missing button events.
+        m_CurrentLaunchForce = m_MinLaunchForce;
+    }
+
+    [PunRPC]
+    public void Fire(PhotonMessageInfo info)
     {
         // Instantiate and launch the shell.
         // Set the fired flag so only Fire is only called once.

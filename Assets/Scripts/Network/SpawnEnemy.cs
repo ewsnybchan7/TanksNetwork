@@ -34,9 +34,9 @@ public class SpawnEnemy : MonoBehaviour
         while(isGame && spawnNum < maxSpawnNum)
         {
             if (normal) normalSpawn();
-            else if (shotgun) ;
-            else if (missile) ;
-            else if (bomb) ;
+            else if (shotgun) shotgunSpawn();
+            else if (missile) missileSpawn();
+            else if (bomb) bombSpawn();
 
             spawnNum++;
 
