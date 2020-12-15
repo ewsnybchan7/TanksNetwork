@@ -16,8 +16,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public Text m_MessageText;
     public GameObject m_ClearText;
     public GameObject m_TankPrefab;
-    public TankManager[] m_Tanks;
-
+    public static TankManager[] m_Tanks;
 
     private int m_RoundNumber;
     private WaitForSeconds m_StartWait;
@@ -26,7 +25,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     private TankManager m_GameWinner;
     //private TankManager[] m_Enemeys;
     private bool RoundClearFlag = false;
-    
+
+    public int kill = 0;
+
 
     public SpawnEnemy[] spawnPoints;
 
@@ -86,7 +87,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private IEnumerator GameLoop()
     {
-
         yield return StartCoroutine(RoundStarting());
         yield return StartCoroutine(RoundPlaying());
         yield return StartCoroutine(RoundEnding());
@@ -219,4 +219,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
     #endregion
+
+    public void increaseKill()
+    {
+        kill++;
+    }
 }

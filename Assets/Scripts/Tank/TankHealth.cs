@@ -19,7 +19,6 @@ public class TankHealth : MonoBehaviour, IPunObservable
     public float m_CurrentHealth;  
     private bool m_Dead;            
 
-
     private void Awake()
     {
         m_ExplosionParticles = Instantiate(m_ExplosionPrefab).GetComponent<ParticleSystem>();
@@ -76,6 +75,9 @@ public class TankHealth : MonoBehaviour, IPunObservable
         m_ExplosionAudio.Play();
 
         gameObject.SetActive(false); //tank off
+
+        // if ai 인지
+        GetComponent<PhotonView>().RPC("aiDeath", RpcTarget.AllBuffered);
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -87,6 +89,13 @@ public class TankHealth : MonoBehaviour, IPunObservable
         else
         {
             m_CurrentHealth = (float)stream.ReceiveNext();
+
         }
+    }
+
+    [PunRPC]
+    private void aiDeath()
+    {
+        FindObjectOfType<GameManager>().increaseKill();
     }
 }
