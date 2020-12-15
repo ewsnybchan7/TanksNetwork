@@ -47,6 +47,8 @@ public class NetworkPlayer : MonoBehaviourPunCallbacks
         {
             renderers[i].material.color = m_PlayerColor;
         }
+
+
     }
 
     // Update is called once per frame

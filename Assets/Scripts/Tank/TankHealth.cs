@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class TankHealth : MonoBehaviour
+public class TankHealth : MonoBehaviour, IPunObservable
 {
     public float m_StartingHealth = 100f;          
     public Slider m_Slider;                        
@@ -14,7 +16,7 @@ public class TankHealth : MonoBehaviour
 
     private AudioSource m_ExplosionAudio;          
     private ParticleSystem m_ExplosionParticles;   
-    private float m_CurrentHealth;  
+    public float m_CurrentHealth;  
     private bool m_Dead;            
 
 
@@ -35,22 +37,24 @@ public class TankHealth : MonoBehaviour
         SetHealthUI();
     }
     
-
     public void TakeDamage(float amount)
     {
         // Adjust the tank's current health, update the UI based on the new health and check whether or not the tank is dead.
+        //Hashtable playerProperty = GetComponent<PhotonView>().Owner.CustomProperties;
+
         m_CurrentHealth -= amount;
 
-        SetHealthUI();
+        //SetHealthUI();
+        GetComponent<PhotonView>().RPC("SetHealthUI", RpcTarget.AllBuffered);
 
         if (m_CurrentHealth <= 0f && !m_Dead)
         {
-            OnDeath();
+            GetComponent<PhotonView>().RPC("OnDeath", RpcTarget.AllBuffered);
+            //OnDeath();
         }
-
     }
 
-
+    [PunRPC]
     private void SetHealthUI()
     {
         // Adjust the value and colour of the slider.
@@ -59,7 +63,7 @@ public class TankHealth : MonoBehaviour
         m_FillImage.color = Color.Lerp(m_ZeroHealthColor, m_FullHealthColor, m_CurrentHealth / m_StartingHealth);
     }
 
-
+    [PunRPC]
     private void OnDeath()
     {
         // Play the effects for the death of the tank and deactivate it.
@@ -72,5 +76,17 @@ public class TankHealth : MonoBehaviour
         m_ExplosionAudio.Play();
 
         gameObject.SetActive(false); //tank off
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if(stream.IsWriting)
+        {
+            stream.SendNext(m_CurrentHealth);
+        }
+        else
+        {
+            m_CurrentHealth = (float)stream.ReceiveNext();
+        }
     }
 }

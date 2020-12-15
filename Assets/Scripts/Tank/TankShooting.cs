@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using Photon.Pun;
 
-public class TankShooting : MonoBehaviour
+public class TankShooting : MonoBehaviour, IPunObservable
 {
     public int m_PlayerNumber = 1;       
     public Rigidbody m_Shell;            
@@ -23,6 +23,8 @@ public class TankShooting : MonoBehaviour
     private bool m_Fired;
 
     private PhotonView pv;
+
+    private Vector3 shotVector;
 
     private void OnEnable()
     {
@@ -125,6 +127,7 @@ public class TankShooting : MonoBehaviour
         Fire();
     }
 
+    [PunRPC]
     public void Fire()
     {
         // Instantiate and launch the shell.
@@ -147,7 +150,7 @@ public class TankShooting : MonoBehaviour
         }
 
         // Set the shell's velocity to the launch force in the fire position's forward direction.
-        shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
+        shellInstance.velocity = pv.IsMine ? m_CurrentLaunchForce * m_FireTransform.forward : m_CurrentLaunchForce * shotVector;
 
         // Change the clip to the firing clip and play it.
         m_ShootingAudio.clip = m_FireClip;
@@ -155,5 +158,19 @@ public class TankShooting : MonoBehaviour
 
         // Reset the launch force.  This is a precaution in case of missing button events.
         m_CurrentLaunchForce = m_MinLaunchForce;
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if(stream.IsWriting)
+        {
+            stream.SendNext(m_CurrentLaunchForce);
+            stream.SendNext(m_FireTransform.forward);
+        }
+        else
+        {
+            m_CurrentLaunchForce = (float)stream.ReceiveNext();
+            shotVector = (Vector3)stream.ReceiveNext();
+        }
     }
 }
