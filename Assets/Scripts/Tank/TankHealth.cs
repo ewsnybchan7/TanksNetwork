@@ -11,6 +11,7 @@ public class TankHealth : MonoBehaviour, IPunObservable
     public Color m_FullHealthColor = Color.green;  
     public Color m_ZeroHealthColor = Color.red;    
     public GameObject m_ExplosionPrefab;
+    public bool IsAI;
 
     public float getCurHealth() { return m_CurrentHealth;}
 
@@ -74,10 +75,13 @@ public class TankHealth : MonoBehaviour, IPunObservable
         m_ExplosionParticles.Play();
         m_ExplosionAudio.Play();
 
+
+
         gameObject.SetActive(false); //tank off
 
         // if ai 인지
-        GetComponent<PhotonView>().RPC("aiDeath", RpcTarget.AllBuffered);
+        if(IsAI)
+            GetComponent<PhotonView>().RPC("aiDeath", RpcTarget.AllBuffered);
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

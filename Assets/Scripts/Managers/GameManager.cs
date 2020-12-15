@@ -60,17 +60,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     #region TANKS method
 
-    private void SpawnAllTanks()
-    {
-        for (int i = 0; i < m_Tanks.Length; i++)
-        {
-            m_Tanks[i].m_Instance =
-                Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
-            m_Tanks[i].m_PlayerNumber = i + 1;
-            m_Tanks[i].Setup();
-        }
-    }
-
 
     private void SetCameraTargets()
     {
