@@ -11,16 +11,22 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int m_NumRoundsToWin = 5;
     public float m_StartDelay = 3f;
     public float m_EndDelay = 3f;
+    public float m_MaxEnemys = 10f;
     public CameraControl m_CameraControl;
     public Text m_MessageText;
+    public GameObject m_ClearText;
     public GameObject m_TankPrefab;
     public TankManager[] m_Tanks;
+
 
     private int m_RoundNumber;
     private WaitForSeconds m_StartWait;
     private WaitForSeconds m_EndWait;
     private TankManager m_RoundWinner;
     private TankManager m_GameWinner;
+    //private TankManager[] m_Enemeys;
+    private bool RoundClearFlag = false;
+    
 
     public SpawnEnemy[] spawnPoints;
 
@@ -85,9 +91,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         yield return StartCoroutine(RoundPlaying());
         yield return StartCoroutine(RoundEnding());
 
-        if (m_GameWinner != null)
+        if (m_GameWinner != null && RoundClearFlag == true)
         {
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene(2);
         }
         else
         {
@@ -100,6 +106,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         ResetAllTanks();
         DisableTankControl();
+        m_ClearText.SetActive(false);
 
         m_CameraControl.SetStartPositionAndSize();
 
@@ -116,7 +123,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         m_MessageText.text = string.Empty;
 
-        while (!OneTankLeft())
+        while (!NoneTankLeft() || !NoneEnemyLeft())
         {
             yield return null;
         }
@@ -127,23 +134,33 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         DisableTankControl();
 
-        m_RoundWinner = null;
+        //m_RoundWinner = null;
 
-        m_RoundWinner = GetRoundWinner();
+        //m_RoundWinner = GetRoundWinner();
 
-        if (m_RoundWinner != null)
-            m_RoundWinner.m_Wins++;
+        //if (m_RoundWinner != null)
+        //    m_RoundWinner.m_Wins++;
 
-        m_GameWinner = GetGameWinner();
+        //m_GameWinner = GetGameWinner();
 
-        string message = EndMessage();
-        m_MessageText.text = message;
-
+        if (GetRoundWinner() != null)
+        {
+            RoundClearFlag = true;
+            m_ClearText.SetActive(true);
+        }
+        else
+        {
+            m_MessageText.text = "Clear Failed...";
+        }
+       
+        //string message = EndMessage();
+        //m_MessageText.text = message;
+        
         yield return m_EndWait;
     }
 
 
-    private bool OneTankLeft()
+    private bool NoneTankLeft()
     {
         int numTanksLeft = 0;
 
@@ -153,7 +170,13 @@ public class GameManager : MonoBehaviourPunCallbacks
                 numTanksLeft++;
         }
 
-        return numTanksLeft <= 1;
+        return numTanksLeft < 1;
+    }
+
+    private bool NoneEnemyLeft()
+    {
+        return true;
+
     }
 
 
@@ -168,38 +191,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         return null;
     }
 
-
-    private TankManager GetGameWinner()
-    {
-        for (int i = 0; i < m_Tanks.Length; i++)
-        {
-            if (m_Tanks[i].m_Wins == m_NumRoundsToWin)
-                return m_Tanks[i];
-        }
-
-        return null;
-    }
-
-
-    private string EndMessage()
-    {
-        string message = "DRAW!";
-
-        if (m_RoundWinner != null)
-            message = m_RoundWinner.m_ColoredPlayerText + " WINS THE ROUND!";
-
-        message += "\n\n\n\n";
-
-        for (int i = 0; i < m_Tanks.Length; i++)
-        {
-            message += m_Tanks[i].m_ColoredPlayerText + ": " + m_Tanks[i].m_Wins + " WINS\n";
-        }
-
-        if (m_GameWinner != null)
-            message = m_GameWinner.m_ColoredPlayerText + " WINS THE GAME!";
-
-        return message;
-    }
 
 
     private void ResetAllTanks()
