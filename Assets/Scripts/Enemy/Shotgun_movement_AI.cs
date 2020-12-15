@@ -4,9 +4,9 @@ using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.PlayerLoop;
+using Photon.Pun;
 
-
-public class Shotgun_movement_AI : FSM
+public class Shotgun_movement_AI : FSM, IPunObservable
 {
 
     public Shotgun_shooting tankShooter;
@@ -107,8 +107,12 @@ public class Shotgun_movement_AI : FSM
 
         if (elapsedTime > shootRate)
         {
-            this.tankShooter.Fire();
-            elapsedTime = 0;
+            //this.tankShooter.Fire();
+            if(players[0].GetComponent<PhotonView>().IsMine)
+            {
+                tankShooter.GetComponent<PhotonView>().RPC("Fire", RpcTarget.All);
+                elapsedTime = 0;
+            }
         }
     }
 
@@ -182,5 +186,17 @@ public class Shotgun_movement_AI : FSM
         return false;
     }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        base.OnPhotonSerializeView(stream, info);
 
+        if (stream.IsWriting)
+        {
+            stream.SendNext(m_CurState);
+        }
+        else
+        {
+            m_CurState = (FSMState)stream.ReceiveNext();
+        }
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class Missile_shooting : MonoBehaviour
 {
@@ -36,6 +37,7 @@ public class Missile_shooting : MonoBehaviour
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime; //차징 속도 계산
     }
 
+    [PunRPC]
     public void Fire()
     {
         // Instantiate and launch the shell.

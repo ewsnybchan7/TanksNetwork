@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class Shotgun_shooting: MonoBehaviour
 {
@@ -83,7 +84,7 @@ public class Shotgun_shooting: MonoBehaviour
         }
     }
 
-
+    [PunRPC]
     public void Fire()
     {
         // Instantiate and launch the shell.

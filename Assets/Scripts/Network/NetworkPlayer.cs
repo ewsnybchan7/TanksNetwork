@@ -52,6 +52,9 @@ public class NetworkPlayer : MonoBehaviourPunCallbacks
         }
 
         GameManager.gameManager.m_Players.Add(this);
+
+        m_SpawnPoint = FindObjectOfType<NetworkSample>().spawnPositions[m_PlayerNumber];
+        m_Instance = this.gameObject;
     }
 
     // Update is called once per frame

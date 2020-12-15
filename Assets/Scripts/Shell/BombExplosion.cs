@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class BombExplosion : MonoBehaviour
 {
@@ -12,19 +13,18 @@ public class BombExplosion : MonoBehaviour
     public float m_ExplosionForce = 1000f;
     public float m_MaxLifeTime = 3.9f;         //포탄 유지 시간         
     public float m_ExplosionRadius = 15f;    //포탄 폭발 반경    
-    // Start is called before the first frame update
+                                             // Start is called before the first frame update
+    [PunRPC]
     public void inite()
     {
         //Destroy(gameObject, m_MaxLifeTime); //유지 시간 이휴에 object를 destroy
         Invoke("Detonate", 3.5f);
-
     }
 
     // Update is called once per frame
 
     public void Detonate()
     {
-
         Instantiate(explosionPrefab, transform.position, transform.rotation);
         Vector3 explotionPosition = bomb.transform.position;
         Collider[] colliders = Physics.OverlapSphere(explotionPosition, m_ExplosionRadius, m_TankMask);

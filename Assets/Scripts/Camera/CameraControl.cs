@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class CameraControl : MonoBehaviour
 {
     public float m_DampTime = 0.2f;                 
     public float m_ScreenEdgeBuffer = 4f;           
     public float m_MinSize = 6.5f;                  
-    [HideInInspector] public Transform[] m_Targets;         // tank target
+    [HideInInspector] public List<NetworkPlayer> m_Targets;         // tank target
 
     private Camera m_Camera;                        
     private float m_ZoomSpeed;                      
@@ -21,6 +22,10 @@ public class CameraControl : MonoBehaviour
         m_Camera = GetComponentInChildren<Camera>();
     }
 
+    private void Start()
+    {
+        
+    }
 
     private void FixedUpdate()
     {
@@ -28,6 +33,11 @@ public class CameraControl : MonoBehaviour
         {
             Move();
             Zoom();
+        }
+
+        if(m_Targets.Count == 0)
+        {
+            updateTargets();
         }
     }
 
@@ -47,6 +57,11 @@ public class CameraControl : MonoBehaviour
         }
     }
 
+    private void updateTargets()
+    {
+        m_Targets = GameManager.gameManager.m_Players;
+    }
+
     private void Move()
     {
         FindAveragePosition();
@@ -63,12 +78,12 @@ public class CameraControl : MonoBehaviour
         {
             int numTargets = 0;
 
-            for (int i = 0; i < m_Targets.Length; i++)
+            for (int i = 0; i < m_Targets.Count; i++)
             {
                 if (!m_Targets[i].gameObject.activeSelf) // activeSelf: The local active state of this GameObject. (Read Only)
                     continue;
 
-                averagePos += m_Targets[i].position;
+                averagePos += m_Targets[i].transform.position;
                 numTargets++;
             }
 
@@ -79,8 +94,23 @@ public class CameraControl : MonoBehaviour
         }
         else
         {
-            averagePos = localPlayer.transform.position;
-            averagePos.y = transform.position.y;
+            if (localPlayer.activeSelf)
+            {
+                averagePos = localPlayer.transform.position;
+                averagePos.y = transform.position.y;
+            }
+            else
+            {
+                foreach(NetworkPlayer player in m_Targets)
+                {
+                    if(!player.photonView.IsMine)
+                    {
+                        averagePos = player.transform.position;
+                        averagePos.y = transform.position.y;
+                        break;
+                    }
+                }
+            }
         }
 
         m_DesiredPosition = averagePos;
@@ -103,12 +133,12 @@ public class CameraControl : MonoBehaviour
             Vector3 desiredLocalPos = transform.InverseTransformPoint(m_DesiredPosition); // InverseTransformPoint: world 좌표를 해당 transform 기준 local 좌표로 변환
 
 
-            for (int i = 0; i < m_Targets.Length; i++)
+            for (int i = 0; i < m_Targets.Count; i++)
             {
                 if (!m_Targets[i].gameObject.activeSelf)
                     continue;
 
-                Vector3 targetLocalPos = transform.InverseTransformPoint(m_Targets[i].position);
+                Vector3 targetLocalPos = transform.InverseTransformPoint(m_Targets[i].transform.position);
 
                 Vector3 desiredPosToTarget = targetLocalPos - desiredLocalPos; // 카메라의 중간 지점에서 탱크로 향하는 벡터
 

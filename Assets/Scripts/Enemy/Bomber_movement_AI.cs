@@ -4,9 +4,9 @@ using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.PlayerLoop;
+using Photon.Pun;
 
-
-public class Bomber_movement_AI : FSM
+public class Bomber_movement_AI : FSM, IPunObservable
 {
     public GameObject Bomb;
     public BombExplosion TankExplosion;
@@ -89,8 +89,6 @@ public class Bomber_movement_AI : FSM
 
         BombAnimator.SetBool("isDetonate", true);
         
-
-
         Collider[] players = Physics.OverlapSphere(transform.position, 5.0f, LayerMask.GetMask("Players"));
         if(players.Length > 0)
             player = players[0].gameObject;
@@ -106,12 +104,13 @@ public class Bomber_movement_AI : FSM
         transform.rotation = Quaternion.Slerp(transform.rotation, _lookRotation, Time.deltaTime * 3);
         if (count == 0)
         {
-            this.TankExplosion.inite();
-            count++;
+            //this.TankExplosion.inite();
+            if(players[0].GetComponent<PhotonView>().IsMine)
+            {
+                TankExplosion.GetComponent<PhotonView>().RPC("inite", RpcTarget.All);
+                count++;
+            }
         }
-            
-           
-        
     }
 
     private void UpdateChaseState()
@@ -152,5 +151,17 @@ public class Bomber_movement_AI : FSM
         return false;
     }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        base.OnPhotonSerializeView(stream, info);
 
+        if (stream.IsWriting)
+        {
+            stream.SendNext(m_CurState);
+        }
+        else
+        {
+            m_CurState = (FSMState)stream.ReceiveNext();
+        }
+    }
 }

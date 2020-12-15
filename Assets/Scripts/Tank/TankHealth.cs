@@ -41,8 +41,6 @@ public class TankHealth : MonoBehaviour, IPunObservable
     public void TakeDamage(float amount)
     {
         // Adjust the tank's current health, update the UI based on the new health and check whether or not the tank is dead.
-        //Hashtable playerProperty = GetComponent<PhotonView>().Owner.CustomProperties;
-
         m_CurrentHealth -= amount;
 
         //SetHealthUI();
@@ -93,8 +91,11 @@ public class TankHealth : MonoBehaviour, IPunObservable
         }
 
         // if ai 인지
-        if(IsAI)
-            GetComponent<PhotonView>().RPC("aiDeath", RpcTarget.AllBuffered);
+        if (IsAI)
+        {
+            aiDeath();
+            //GetComponent<PhotonView>().RPC("aiDeath", RpcTarget.AllBuffered);
+        }
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -118,7 +119,6 @@ public class TankHealth : MonoBehaviour, IPunObservable
         this.transform.rotation = GameManager.gameManager.spawnPoints[(int)playerProperty["Number"]].transform.rotation;
     }
 
-    [PunRPC]
     private void aiDeath()
     {
         FindObjectOfType<GameManager>().increaseKill();

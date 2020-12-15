@@ -26,7 +26,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     private WaitForSeconds m_EndWait;
     private TankManager m_RoundWinner;
     private TankManager m_GameWinner;
-    //private TankManager[] m_Enemeys;
     private bool RoundClearFlag = false;
 
     public int kill = 0;
@@ -88,7 +87,14 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private IEnumerator RoundStarting()
     {
-        DisableTankControl();
+        foreach (NetworkPlayer player in m_Players)
+        {
+            player.photonView.RPC("Reset", RpcTarget.AllBuffered);
+        }
+
+        if (!NoneTankLeft())
+            DisableTankControl();
+        
         m_ClearText.SetActive(false);
         
         m_MessageText.text = "ROUND " + m_RoundNumber;
@@ -117,7 +123,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private IEnumerator RoundEnding()
     {
-        DisableTankControl();
+        if(!NoneTankLeft())
+            DisableTankControl();
 
         if (NoneEnemyLeft())
         {

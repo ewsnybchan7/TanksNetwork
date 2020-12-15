@@ -6,7 +6,7 @@ using UnityEngine.AI;
 using UnityEngine.PlayerLoop;
 using Photon.Pun;
 
-public class proto_movement_AI : FSM
+public class proto_movement_AI : FSM, IPunObservable
 {
 
     public TankShooting tankShooter;
@@ -186,5 +186,17 @@ public class proto_movement_AI : FSM
         return false;
     }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        base.OnPhotonSerializeView(stream, info);
 
+        if (stream.IsWriting)
+        {
+            stream.SendNext(m_CurState);
+        }
+        else
+        {
+            m_CurState = (FSMState)stream.ReceiveNext();
+        }
+    }
 }
