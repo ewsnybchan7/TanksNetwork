@@ -14,14 +14,14 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int m_NumRoundsToWin = 5;
     public float m_StartDelay = 3f;
     public float m_EndDelay = 3f;
-    public int m_MaxEnemys = 2;
+    public int m_MaxEnemys;
     public CameraControl m_CameraControl;
     public Text m_MessageText;
     public GameObject m_ClearText;
     public GameObject m_TankPrefab;
     public TankManager[] m_Tanks;
 
-    private int m_RoundNumber = 1;
+    public int m_RoundNumber;
     private WaitForSeconds m_StartWait;
     private WaitForSeconds m_EndWait;
     private TankManager m_RoundWinner;
@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         if (RoundClearFlag == true)
         {
-            SceneManager.LoadScene(2);
+            SceneManager.LoadScene(m_RoundNumber+1);
         }
         else
         {

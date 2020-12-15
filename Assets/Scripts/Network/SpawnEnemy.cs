@@ -51,16 +51,16 @@ public class SpawnEnemy : MonoBehaviour
 
     private void shotgunSpawn()
     {
-        PhotonNetwork.InstantiateRoomObject("EnemyTankAI", this.transform.position, this.transform.rotation);
+        PhotonNetwork.InstantiateRoomObject("Shotgun_tank", this.transform.position, this.transform.rotation);
     }
 
     private void missileSpawn()
     {
-        PhotonNetwork.InstantiateRoomObject("EnemyTankAI", this.transform.position, this.transform.rotation);
+        PhotonNetwork.InstantiateRoomObject("Missile_tank", this.transform.position, this.transform.rotation);
     }
 
     private void bombSpawn()
     {
-        PhotonNetwork.InstantiateRoomObject("EnemyTankAI", this.transform.position, this.transform.rotation);
+        PhotonNetwork.InstantiateRoomObject("Bomber_tank", this.transform.position, this.transform.rotation);
     }
 }
