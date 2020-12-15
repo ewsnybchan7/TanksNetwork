@@ -88,7 +88,7 @@ public class TankHealth : MonoBehaviour, IPunObservable
 
             if ((int)playerProperty[TANKSGame.PLAYER_LIVES] > 0)
             {
-                revive();
+                StartCoroutine(revive());
             }
         }
 
@@ -112,7 +112,6 @@ public class TankHealth : MonoBehaviour, IPunObservable
     private IEnumerator revive()
     {
         yield return new WaitForSeconds(TANKSGame.PLAYER_RESPAWN_TIME);
-
         gameObject.SetActive(true);
         Hashtable playerProperty = PhotonNetwork.LocalPlayer.CustomProperties;
         this.transform.position = GameManager.gameManager.spawnPoints[(int)playerProperty["Number"]].transform.position;

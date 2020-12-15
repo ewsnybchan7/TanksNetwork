@@ -150,7 +150,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private bool NoneEnemyLeft()
     {
-        Debug.Log(kill + " " + m_MaxEnemys);
         if (kill == m_MaxEnemys)
         {
             return true;
