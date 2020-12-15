@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
@@ -75,9 +76,21 @@ public class TankHealth : MonoBehaviour, IPunObservable
         m_ExplosionParticles.Play();
         m_ExplosionAudio.Play();
 
-
-
         gameObject.SetActive(false); //tank off
+
+        if (!IsAI)
+        {
+            Hashtable playerProperty = PhotonNetwork.LocalPlayer.CustomProperties;
+            if (GetComponent<PhotonView>().IsMine)
+            {
+                playerProperty[TANKSGame.PLAYER_LIVES] = (int)playerProperty[TANKSGame.PLAYER_LIVES] - 1;
+            }
+
+            if ((int)playerProperty[TANKSGame.PLAYER_LIVES] > 0)
+            {
+                revive();
+            }
+        }
 
         // if ai 인지
         if(IsAI)
@@ -93,8 +106,17 @@ public class TankHealth : MonoBehaviour, IPunObservable
         else
         {
             m_CurrentHealth = (float)stream.ReceiveNext();
-
         }
+    }
+    
+    private IEnumerator revive()
+    {
+        yield return new WaitForSeconds(TANKSGame.PLAYER_RESPAWN_TIME);
+
+        gameObject.SetActive(true);
+        Hashtable playerProperty = PhotonNetwork.LocalPlayer.CustomProperties;
+        this.transform.position = GameManager.gameManager.spawnPoints[(int)playerProperty["Number"]].transform.position;
+        this.transform.rotation = GameManager.gameManager.spawnPoints[(int)playerProperty["Number"]].transform.rotation;
     }
 
     [PunRPC]
