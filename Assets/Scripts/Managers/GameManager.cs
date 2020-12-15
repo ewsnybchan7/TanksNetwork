@@ -109,7 +109,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         m_MessageText.text = string.Empty;
 
-        while (!NoneEnemyLeft())
+        while ((!NoneTankLeft() ^ !NoneEnemyLeft()))
         {
             yield return null;
         }
@@ -145,7 +145,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 numTanksLeft++;
         }
 
-        return numTanksLeft < 1;
+        return numTanksLeft != 0;
     }
 
     private bool NoneEnemyLeft()

@@ -88,7 +88,7 @@ public class TankHealth : MonoBehaviour, IPunObservable
 
             if ((int)playerProperty[TANKSGame.PLAYER_LIVES] > 0)
             {
-                StartCoroutine(revive());
+                //StartCoroutine(revive());
             }
         }
 
