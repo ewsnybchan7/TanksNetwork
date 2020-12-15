@@ -108,7 +108,7 @@ public class proto_movement_AI : FSM
         if (elapsedTime > shootRate)
         {
             //this.tankShooter.Fire();
-            tankShooter.GetComponent<PhotonView>().RPC("Fire", RpcTarget.OthersBuffered);
+            tankShooter.GetComponent<PhotonView>().RPC("Fire", RpcTarget.All);
             elapsedTime = 0;
         }
     }

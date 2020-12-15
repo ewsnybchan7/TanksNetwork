@@ -15,7 +15,7 @@ public class SpawnEnemy : MonoBehaviour
     public float spawnTime;
 
     public int spawnNum;
-    public int maxSpawnNum = 5;
+    public int maxSpawnNum = 2;
 
     // Start is called before the first frame update
     void Start()

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon.Pun;
@@ -8,17 +9,19 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
+    public static GameManager gameManager;
+
     public int m_NumRoundsToWin = 5;
     public float m_StartDelay = 3f;
     public float m_EndDelay = 3f;
-    public float m_MaxEnemys = 10f;
+    public int m_MaxEnemys = 2;
     public CameraControl m_CameraControl;
     public Text m_MessageText;
     public GameObject m_ClearText;
     public GameObject m_TankPrefab;
-    public static TankManager[] m_Tanks;
+    public TankManager[] m_Tanks;
 
-    private int m_RoundNumber;
+    private int m_RoundNumber = 1;
     private WaitForSeconds m_StartWait;
     private WaitForSeconds m_EndWait;
     private TankManager m_RoundWinner;
@@ -28,11 +31,14 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public int kill = 0;
 
+    private bool isGameStarting = false;
 
     public SpawnEnemy[] spawnPoints;
+    public List<NetworkPlayer> m_Players;
 
     private void Awake()
     {
+        gameManager = this;
         spawnPoints = FindObjectsOfType<SpawnEnemy>();
     }
 
@@ -41,13 +47,16 @@ public class GameManager : MonoBehaviourPunCallbacks
         m_StartWait = new WaitForSeconds(m_StartDelay);
         m_EndWait = new WaitForSeconds(m_EndDelay);
 
-        //StartCoroutine(GameLoop());
+        m_Players = new List<NetworkPlayer>();
+    }
 
-        //foreach(SpawnEnemy sp in spawnPoints)
-        //{
-        //    sp.isGame = true;
-        //    sp.StartCoroutine(sp.spawnEnmey());
-        //}
+    private void Update()
+    {
+        if(!isGameStarting && m_Players.Count == PhotonNetwork.PlayerList.Length)
+        {
+            isGameStarting = true;
+            StartCoroutine(GameLoop());
+        }
     }
 
     #region Photon Callbacks
@@ -60,27 +69,13 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     #region TANKS method
 
-
-    private void SetCameraTargets()
-    {
-        Transform[] targets = new Transform[m_Tanks.Length];
-
-        for (int i = 0; i < targets.Length; i++)
-        {
-            targets[i] = m_Tanks[i].m_Instance.transform;
-        }
-
-        m_CameraControl.m_Targets = targets;
-    }
-
-
     private IEnumerator GameLoop()
     {
         yield return StartCoroutine(RoundStarting());
         yield return StartCoroutine(RoundPlaying());
         yield return StartCoroutine(RoundEnding());
 
-        if (m_GameWinner != null && RoundClearFlag == true)
+        if (RoundClearFlag == true)
         {
             SceneManager.LoadScene(2);
         }
@@ -93,13 +88,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private IEnumerator RoundStarting()
     {
-        ResetAllTanks();
         DisableTankControl();
         m_ClearText.SetActive(false);
-
-        m_CameraControl.SetStartPositionAndSize();
-
-        m_RoundNumber++;
+        
         m_MessageText.text = "ROUND " + m_RoundNumber;
 
         yield return m_StartWait;
@@ -110,29 +101,25 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         EnableTankControl();
 
+        foreach (SpawnEnemy sp in spawnPoints)
+        {
+            sp.isGame = true;
+            sp.StartCoroutine(sp.spawnEnmey());
+        }
+
         m_MessageText.text = string.Empty;
 
-        while (!NoneTankLeft() || !NoneEnemyLeft())
+        while (!NoneEnemyLeft())
         {
             yield return null;
         }
     }
 
-
     private IEnumerator RoundEnding()
     {
         DisableTankControl();
 
-        //m_RoundWinner = null;
-
-        //m_RoundWinner = GetRoundWinner();
-
-        //if (m_RoundWinner != null)
-        //    m_RoundWinner.m_Wins++;
-
-        //m_GameWinner = GetGameWinner();
-
-        if (GetRoundWinner() != null)
+        if (NoneEnemyLeft())
         {
             RoundClearFlag = true;
             m_ClearText.SetActive(true);
@@ -148,14 +135,13 @@ public class GameManager : MonoBehaviourPunCallbacks
         yield return m_EndWait;
     }
 
-
     private bool NoneTankLeft()
     {
         int numTanksLeft = 0;
 
-        for (int i = 0; i < m_Tanks.Length; i++)
+        for (int i = 0; i < m_Players.Count; i++)
         {
-            if (m_Tanks[i].m_Instance.activeSelf)
+            if (m_Players[i].gameObject.activeSelf)
                 numTanksLeft++;
         }
 
@@ -164,47 +150,30 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private bool NoneEnemyLeft()
     {
-        return true;
-
-    }
-
-
-    private TankManager GetRoundWinner()
-    {
-        for (int i = 0; i < m_Tanks.Length; i++)
+        Debug.Log(kill + " " + m_MaxEnemys);
+        if (kill == m_MaxEnemys)
         {
-            if (m_Tanks[i].m_Instance.activeSelf)
-                return m_Tanks[i];
+            return true;
         }
-
-        return null;
-    }
-
-
-
-    private void ResetAllTanks()
-    {
-        for (int i = 0; i < m_Tanks.Length; i++)
+        else
         {
-            m_Tanks[i].Reset();
+            return false;
         }
     }
-
 
     private void EnableTankControl()
     {
-        for (int i = 0; i < m_Tanks.Length; i++)
+        foreach(NetworkPlayer player in m_Players)
         {
-            m_Tanks[i].EnableControl();
+            player.photonView.RPC("EnableControl", RpcTarget.AllBuffered);
         }
     }
 
-
     private void DisableTankControl()
     {
-        for (int i = 0; i < m_Tanks.Length; i++)
+        foreach(NetworkPlayer player in m_Players)
         {
-            m_Tanks[i].DisableControl();
+            player.photonView.RPC("DisableControl", RpcTarget.AllBuffered);        
         }
     }
     #endregion

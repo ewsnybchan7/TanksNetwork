@@ -19,6 +19,8 @@ public class NetworkPlayer : MonoBehaviourPunCallbacks
     private GameObject m_CanvasGameObject;
 
     private PhotonView pv;
+    private Hashtable playerProperty;
+
 
     private void Awake()
     {
@@ -32,9 +34,10 @@ public class NetworkPlayer : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        // Player property
-        //m_PlayerColor = (Color)photonView.Owner.CustomProperties["Color"];
-        //m_PlayerNumber = (int)photonView.Owner.CustomProperties["Number"];
+        Hashtable playerProperty = photonView.Owner.CustomProperties;
+
+        m_PlayerColor = (Color)playerProperty["Color"];
+        m_PlayerNumber = (int)playerProperty["Number"];
 
         m_Movement.m_PlayerNumber = m_PlayerNumber;
         m_Shooting.m_PlayerNumber = m_PlayerNumber;
@@ -47,7 +50,7 @@ public class NetworkPlayer : MonoBehaviourPunCallbacks
         {
             renderers[i].material.color = m_PlayerColor;
         }
-
+        
 
     }
 
@@ -76,6 +79,7 @@ public class NetworkPlayer : MonoBehaviourPunCallbacks
         m_CanvasGameObject.SetActive(true);
     }
 
+    [PunRPC]
     public void Reset()
     {
         m_Instance.transform.position = m_SpawnPoint.position;
